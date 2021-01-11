@@ -31,17 +31,26 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # print(type(log))
 # print(logList)
+logBasePath = '/media/sf_p-workspace/M7log/'
+outPutPath = os.getcwd() + "/log"
+resultPath = outPutPath + "/result.log"
 
+def xremove(removcelogname):
+    try:
+        os.remove(removcelogname)
+    except FileNotFoundError as e:
+        pass
 
 @app.route('/')
 def index():
+    xremove(resultPath)
+    xremove(getstate4.logPath + "temp.log")
     logList = []
-    log = os.listdir('/media/sf_p-workspace/M7log')
-
-    for i in log:
-        print(i)
-        if os.path.isdir('/media/sf_p-workspace/M7log/' + i):
-            logList.append(i)
+    log = os.listdir(logBasePath)
+    for line in log:
+        print(line)
+        if os.path.isdir(logBasePath + line):
+            logList.append(line)
     return render_template('index.html', name=name, log=logList)
 
 @app.route("/test2", methods=['POST', 'GET']) 
@@ -52,10 +61,10 @@ def analyse():
     # return str(getstate4.run())
     getstate4.merge_log(getstate4.logPath, "temp.log")
     getstate4.state_log3()
-    fo = open("log/result.log", 'r')
+    fo = open(resultPath, 'r')
     result = fo.readlines()
-    os.remove("log/result.log")
-    os.remove(getstate4.logPath + "temp.log")
+    xremove(resultPath)
+    xremove(getstate4.logPath + "temp.log")
     return render_template('result.html', name=name, logname= logname, result=result)
 
 if __name__ == "__main__":
