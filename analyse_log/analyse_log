@@ -1,9 +1,6 @@
 #!/bin/bash
 # 
-# Version: 0.0.1
-# Date:2020.02
-# Author: yjz
-#
+
 
 echo "======================================================="
 echo "                analyse log start"
