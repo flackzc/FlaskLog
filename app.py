@@ -4,7 +4,7 @@
 from flask import Flask, render_template
 # from flask_sqlalchemy import SQLAlchemy
 import os
-import getstate4, test
+import flaskstate4, test
 from flask import redirect, url_for, request
 
 
@@ -44,7 +44,7 @@ def xremove(removcelogname):
 @app.route('/')
 def index():
     xremove(resultPath)
-    xremove(getstate4.logPath + "temp.log")
+    xremove(flaskstate4.logPath + "temp.log")
     logList = []
     log = os.listdir(logBasePath)
     for line in log:
@@ -53,19 +53,25 @@ def index():
             logList.append(line)
     return render_template('index.html', name=name, log=logList)
 
-@app.route("/test2", methods=['POST', 'GET']) 
+@app.route("/analyse", methods=['POST', 'GET']) 
 def analyse(): 
-    logname = request.form.get('fname')
+    inputLogName = request.form.get('fname')
 
     # print(logname, "ddd")
     # return str(getstate4.run())
-    getstate4.merge_log(getstate4.logPath, "temp.log")
-    getstate4.state_log3()
+    flaskstate4.merge_log(flaskstate4.logPath, "temp.log")
+    flaskstate4.state_log3()
     fo = open(resultPath, 'r')
     result = fo.readlines()
     xremove(resultPath)
-    xremove(getstate4.logPath + "temp.log")
-    return render_template('result.html', name=name, logname= logname, result=result)
+    xremove(flaskstate4.logPath + "temp.log")
+    return render_template('result.html', name=name, logname= inputLogName, result=result)
+
+@app.route("/draw", methods=['POST', 'GET'])
+def draw():
+    # return "使用analyse_log analyse_map 绘图并页面显示"
+    return render_template('draw.html', name=name)
+
 
 if __name__ == "__main__":
     app.run(debug=True,port=5001)

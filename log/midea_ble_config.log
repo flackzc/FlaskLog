@@ -1,0 +1,29 @@
+[00:00:41.6681 D/BLE-ENTRY] BLE parameters:
+[00:00:42.7331 D/BLE-ENTRY] BLE init done
+[00:00:42.7333 D/BLE-CONFIG] BLE prefix midea, state: 1
+[00:00:42.7354 I/BLE-CONFIG] sdk->ble_event: 0
+[00:00:42.7356 I/BLE-CONFIG] BLE stack ready[just notify]
+[00:00:42.7357 I/BLE-SDK] BLE broadcast name: midea_b8_3824
+[00:00:42.7375 I/BLE-SDK] advData:
+[00:00:42.7386 I/BLE-SDK] respData:
+[00:00:43.7765 I/BLE-CONFIG] sdk->ble_event: 4
+[00:00:43.7766 I/BLE-CONFIG] BLE connection established[just notify]
+[00:00:43.7767 D/BLE-GATT] Running GATT server
+
+[00:00:46.5830 I/BLE-CONFIG] sdk->ble_event: 3
+[00:00:46.5832 I/BLE-CONFIG] ble config done
+[00:00:46.5835 I/BLE-CONFIG] init ble_done_time: 46
+[00:00:46.5835 D/BLE-CONFIG] ble event: 3
+[00:00:49.0950 I/BLE-CONFIG] wifi_stat CONNECTING
+[00:00:49.0951 D/BLE-CONFIG] ble event: 1
+[00:00:55.1211 I/BLE-CONFIG] wifi_stat LOGINING
+[00:00:55.1213 D/BLE-CONFIG] ble event: 1
+[00:00:56.5278 I/BLE-CONFIG] wifi_stat LOGIN
+[00:00:56.5280 D/BLE-CONFIG] ble event: 1
+[14:49:5.7210 I/BLE-GATT] Device disconnected: Connection reset by peer
+
+[14:49:5.7213 I/BLE-GATT] 
+
+Shutting down...
+
+[14:49:5.7311 I/BLE-ENTRY] ble config exit: 57

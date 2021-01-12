@@ -12,6 +12,8 @@ footer {
     margin-top: 15px;
     text-align: center;
     padding: 10px;
+    bottom:0;
+    position:absolute;
 }
 
 /* 头像 */
@@ -29,7 +31,7 @@ footer {
 
 .movie-list li {
     padding: 12px 24px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 2px solid #ddd;
 }
 
 .movie-list li:last-child {
@@ -38,6 +40,13 @@ footer {
 
 .movie-list li:hover {
     background-color: #f8f9fa;
+}
+
+
+.outputimage {
+    display: block;
+    margin: 0 auto;
+    height: 100px;    
 }
 
 /* 龙猫图片 */

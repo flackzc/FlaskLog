@@ -46,6 +46,7 @@ def writelog(*xargs):
     fo.write(str(xargs))
     fo.write("\n")
     fo.close()
+    
 # writelog("asdasdas","123","234")
 def ignore(one_line_log):
     for one_word in filters:
