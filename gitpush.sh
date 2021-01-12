@@ -5,5 +5,5 @@ if [ $# != 1 ];then
 else		
 	git add .
 	git commit -m $1
-	git push
+	git push origin main
 fi
