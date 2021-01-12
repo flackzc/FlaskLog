@@ -41,7 +41,7 @@ def extend(func):
 
 
 def writelog(*xargs):
-    fo = open(logPath + "result.log", 'a+')
+    fo = open("result.log", 'a+')
     # print(xargs)
     fo.write(str(xargs))
     fo.write("\n")
@@ -91,7 +91,7 @@ def time_near(time):
 
 def get_cleantime_by_time2(time):
     cleanlist = []
-    fo = open(logPath+'temp.log', 'r')
+    fo = open('temp.log', 'r')
     for i in fo.readlines():
         log_list = i.split()
         if "UP_0x04_0x42" in i and log_list[1].split(".")[0] in time_near(time):
@@ -103,7 +103,8 @@ def get_cleantime_by_time2(time):
 
 def get_workstatus_by_time2(time):
     worklist = []
-    fo = open(logPath+'temp.log', 'r')
+    fo = open('temp.log', 'r')
+
     for i in fo.readlines():
         log_list = i.split()
         if "UP_0x04_0x42" in i and log_list[1].split(".")[0] in time_near(time):
@@ -116,7 +117,7 @@ def get_workstatus_by_time2(time):
 
 def get_power_by_time2(time):
     powerlist = []
-    fo = open(logPath+'temp.log', 'r')
+    fo = open('temp.log', 'r')
     for i in fo.readlines():
         log_list = i.split()
         if 'battery' in i and 'MCU' in i and log_list[1].split(".")[0] in time_near(time):
@@ -127,7 +128,8 @@ def get_power_by_time2(time):
         pass
 
 def merge_log(filepath, outfile):
-    k = open(filepath+outfile, 'a+')
+    # k = open(filepath+outfile, 'a+')
+    k = open(outfile, 'a+')
     for parent, dirnames, filenames in os.walk(filepath):
         filenames.sort()
         # print(filenames)
@@ -952,7 +954,7 @@ def state_log2():
 
 @extend
 def state_log3():
-    fo = open(logPath+'temp.log', 'r')
+    fo = open('temp.log', 'r')
     for i in fo.readlines():
         log_list = i.split()
 

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>
+        {{ name }}'s flask web 
+    </title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
+</head>
+
+<body>
+
+    <h2>
+        <img alt="Avatar" class="avatar" src="{{ url_for('static', filename='images/avatar.png') }}">
+        {{ name }}'s flask web
+    </h2>
+
+    <!-- <form action="/test2" method="post">
+        <p><input type="text" name="fname" placeholder="请输入日志路径"></p>
+        <button name="submit" type="submit">reduce</button> 
+    </form> -->
+
+    <!-- <form action="/test" method="post"> 
+        <button name="submit" type="submit">reduce</button> 
+    </form> -->
+
+    {# 使用 length 过滤器获取 result 变量的长度 #}
+    <p>{{ result|length }} 行日志分析 {{ logname }}</p>
+
+    <!-- <div 
+        style="position:absolute; height:400px; overflow:auto"> -->
+
+    <ul class="movie-list">
+        {% for eachlog in result %}  {# 迭代 movies 变量 #}
+        <li>{{ eachlog }} </li>  {# 等同于 movie['title'] #}
+        {% endfor %}  {# 使用 endfor 标签结束 for 语句 #}
+    </ul>
+    <!-- </div> -->
+    <resultfooter>
+        <img alt="Walking Totoro" class="totoro" src="{{ url_for('static', filename='images/totoro.gif') }}">
+        <small>&copy; 2021 <a href="https://www.midea.cn/">美智纵横</a></small>
+    </resultfooter>
+</body>
+</html>

@@ -32,7 +32,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # print(type(log))
 # print(logList)
 logBasePath = '/media/sf_p-workspace/M7log/'
-outPutPath = os.getcwd() + "/log"
+outPutPath = os.getcwd()
 resultPath = outPutPath + "/result.log"
 
 def xremove(removcelogname):
@@ -44,7 +44,7 @@ def xremove(removcelogname):
 @app.route('/')
 def index():
     xremove(resultPath)
-    xremove(flaskstate4.logPath + "temp.log")
+    xremove("temp.log")
     logList = []
     log = os.listdir(logBasePath)
     for line in log:
@@ -55,11 +55,16 @@ def index():
 
 @app.route("/analyse", methods=['POST', 'GET']) 
 def analyse(): 
-    inputLogName = request.form.get('fname')
+    xremove(resultPath)
+    xremove("temp.log")
+    inputLogName = request.form.get('fname').strip(' ')
+    # print(type(inputLogName))
 
     # print(logname, "ddd")
     # return str(getstate4.run())
-    flaskstate4.merge_log(flaskstate4.logPath, "temp.log")
+    print(logBasePath + inputLogName)
+    flaskstate4.merge_log(logBasePath + inputLogName, "temp.log")
+    
     flaskstate4.state_log3()
     fo = open(resultPath, 'r')
     result = fo.readlines()
