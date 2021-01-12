@@ -311,7 +311,7 @@ if os.path.getsize(file_name1):
         ax2 = plt.gca()
         ax2.set_aspect(1)
         ax2.invert_xaxis()
-        plt.savefig('map-BodyPose.png')
+        plt.savefig('map-UpdateOdomPose.png')
 
 
 

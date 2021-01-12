@@ -34,6 +34,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 logBasePath = '/media/sf_p-workspace/M7log/'
 outPutPath = os.getcwd()
 resultPath = outPutPath + "/result.log"
+logList = []
+log = os.listdir(logBasePath)
+for line in log:
+    # print(line)
+    if os.path.isdir(logBasePath + line):
+        logList.append(line)
 
 def xremove(removcelogname):
     try:
@@ -41,19 +47,17 @@ def xremove(removcelogname):
     except FileNotFoundError as e:
         pass
 
-def clear():
-    pass
+
 
 @app.route('/')
 def index():
     xremove(resultPath)
     xremove("temp.log")
-    logList = []
-    log = os.listdir(logBasePath)
-    for line in log:
-        print(line)
-        if os.path.isdir(logBasePath + line):
-            logList.append(line)
+
+    # for line in log:
+    #     # print(line)
+    #     if os.path.isdir(logBasePath + line):
+    #         logList.append(line)
     return render_template('index.html', name=name, log=logList)
 
 @app.route("/analyse", methods=['POST', 'GET']) 
@@ -61,33 +65,47 @@ def analyse():
     xremove(resultPath)
     xremove("temp.log")
     inputLogName = request.form.get('fname').strip(' ')
+    if not inputLogName:
+        return "input empty"
+    elif not os.path.exists(logBasePath + inputLogName):
+        return "log file not exist"
+    elif inputLogName == "." or inputLogName == "..":
+        return "log file not exist"
     # print(type(inputLogName))
 
     # print(logname, "ddd")
     # return str(getstate4.run())
-    print(logBasePath + inputLogName)
-    flaskstate4.merge_log(logBasePath + inputLogName, "temp.log")
-    
-    flaskstate4.state_log3()
-    fo = open(resultPath, 'r')
-    result = fo.readlines()
-    xremove(resultPath)
-    xremove(flaskstate4.logPath + "temp.log")
-    return render_template('result.html', name=name, logname= inputLogName, result=result)
+    else:
+        print(logBasePath + inputLogName)
+        flaskstate4.merge_log(logBasePath + inputLogName, "temp.log")
+        
+        flaskstate4.state_log3()
+        fo = open(resultPath, 'r')
+        result = fo.readlines()
+        xremove(resultPath)
+        xremove(flaskstate4.logPath + "temp.log")
+        return render_template('result.html', name=name, logname= inputLogName, result=result)
 
 @app.route("/draw", methods=['POST', 'GET'])
 def draw():
     # return "使用analyse_log analyse_map 绘图并页面显示"
-    if not request.form.get('fname2'):
-        return render_template('error.html', name=name)
+    inputLogName2 = request.form.get('fname2').strip(' ')
+    print("ddddddd"+logBasePath + inputLogName2)    
+    if not inputLogName2:
+        return "input empty"
+    elif not os.path.exists(logBasePath + inputLogName2):
+        return "log file not exist"
+    elif inputLogName2 == "." or inputLogName2 == "..":
+        return "log file not exist"
     else:
-        inputLogName2 = request.form.get('fname2').strip(' ')
-        print(inputLogName2)
         # os.system("rm -rf analyse_log/log/Log*.log")
-        os.system("echo 111")
+        # os.system("echo 111")
         print(logBasePath+inputLogName2)
-        os.system("scp "+logBasePath+inputLogName2+"/userdata/logs/LOG*.log analyse_log/log")
-        os.system("cd analyse_log;./analyse_log analyse_map;mv *.png ../static/outputimage/")
+        os.system("scp " + logBasePath + inputLogName2 + \
+            "/userdata/logs/LOG*.log analyse_log/log")
+        os.system("cd analyse_log; \
+        ./analyse_log analyse_map; \
+        mv *.png ../static/outputimage/")
         # for png in os.listdir("static/outputimage/"):
         #     print(png)
         #     xremove("static/outputimage/"+png)
@@ -101,15 +119,15 @@ def draw():
 @app.route("/delete", methods=['POST', 'GET'])
 def delete():
     for png in os.listdir("static/outputimage/"):
-        print(png)
+        # print(png)
         xremove("static/outputimage/"+png)
     for logfile in os.listdir("analyse_log/log"):
-        print(logfile)
+        # print(logfile)
         xremove("analyse_log/log/"+logfile)  
     # xremove("static/outputimage/1.png")   
-    return "Clear successful"
+    return render_template('index.html', name=name, log=logList)
 
 if __name__ == "__main__":
     app.run(debug=True,port=5001)
     
-    
+     
