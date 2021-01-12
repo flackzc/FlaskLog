@@ -1,0 +1,4 @@
+I1231 09:54:55.796545 548] [COV] CMotionPlanTask::StartCoverage - (-2600, -7800, 2600, -2600) first=1
+I1231 09:54:56.572228 548] [COV] CMotionPlanTask::StartCoverage - start coverage
+I1231 10:21:26.628232 548] [COV] CMotionPlanTask::StartCoverage - (-926, -5918, 4274, -718) first=1
+E1231 10:21:27.699677 548] [COV] CMotionPlanTask::StartCoverage - failed

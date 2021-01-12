@@ -1,0 +1,4 @@
+I1231 09:54:56.489392 548] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-600, -5100, 2600, -4800), type=0
+I1231 09:54:56.489408 548] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I1231 10:21:27.615056 548] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (2300, -3450, 4250, -1350), type=0
+I1231 10:21:27.615069 548] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1

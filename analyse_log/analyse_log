@@ -322,8 +322,8 @@ analyse_map () {
 	UpdateOdomPose 2D close
 	region_segmentation close
 	cell_segmentation close
-	callback 2D close
-	wavesensor 2D close
+	# callback 2D close
+	# wavesensor 2D close
 	battery 2D close
 	detail
 	./analyse_map ${OUTPUT_PATH}/region_segmentation.log ${OUTPUT_PATH}/cell_segmentation.log \

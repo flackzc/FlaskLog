@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>
-        {{ name }}'s flask web 
+        {{ name }}'s matplotlib draw 
     </title>
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
@@ -15,35 +15,14 @@
         <img alt="Avatar" class="avatar" src="{{ url_for('static', filename='images/avatar.png') }}">
         {{ name }}'s flask web
     </h2>
-
-    <!-- <form action="/analyse" method="post">
-        <p><input type="text" name="fname" placeholder="请输入日志路径"></p>
-        <button name="submit" type="submit">reduce</button> 
-    </form> -->
-
-    <!-- <form action="/test" method="post"> 
-        <button name="submit" type="submit">reduce</button> 
-    </form> -->
-
-    <!-- {# 使用 length 过滤器获取 result 变量的长度 #} -->
-    <!-- <p>{{ result|length }} 行日志分析 {{ logname }}</p> -->
-
-    <!-- <div 
-        style="position:absolute; height:400px; overflow:auto"> -->
-
-    <!-- <ul class="movie-list"> -->
         <img alt="Avatar" class="outputimage" src="{{ url_for('static', filename='outputimage/battery.png') }}">
         <img alt="Avatar" class="outputimage" src="{{ url_for('static', filename='outputimage/map-BodyPose.png') }}">
         <img alt="Avatar" class="outputimage" src="{{ url_for('static', filename='outputimage/Slam-callback.png') }}">
         <img alt="Avatar" class="outputimage" src="{{ url_for('static', filename='outputimage/map-UpdateOdomPose.png') }}">
-        <!-- {% for eachlog in result %}  {# 迭代 movies 变量 #}
-        <li>{{ eachlog }} </li>  {# 等同于 movie['title'] #}
-        {% endfor %}  {# 使用 endfor 标签结束 for 语句 #} -->
-    <!-- </ul> -->
-    <!-- </div> -->
+
     <drawfooter>
         <img alt="Walking Totoro" class="totoro" src="{{ url_for('static', filename='images/totoro.gif') }}">
-        <small>&copy; 2021 <a href="https://www.midea.cn/">美智纵横</a></small>
+        <small>&copy; 2021 <a href="https://www.midea.cn/">美智纵横科技有限公司</a></small>
     </drawfooter>
 </body>
 </html>

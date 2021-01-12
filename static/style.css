@@ -1,7 +1,9 @@
 /* 页面整体 */
 body {
     margin: auto;
-    max-width: 580px;
+    max-width: 1200px;
+    /* width: 60%;
+    height: 100%; */
     font-size: 14px;
     font-family: Helvetica, Arial, sans-serif;
 }
@@ -61,15 +63,15 @@ drawfooter {
 }
 
 
-/* .outputimage {
+.outputimage {
     display: block;
     margin: 0 auto;
     height: 1000px;    
-} */
+}
 
 /* 龙猫图片 */
 .totoro {
     display: block;
     margin: 0 auto;
-    height: 100px;
+    /* height: 100px; */
 }

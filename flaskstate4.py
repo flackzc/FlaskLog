@@ -3,7 +3,6 @@ import os
 logPath = os.getcwd() + "/log/"
 logType = "detail"
 keyvalue1 = "SetNextMachineState"
-# keyvalue1 = "machinestate"
 
 keyvalue2 = "deal msg"
 keyvalue4 = "SetMessage"
@@ -164,7 +163,8 @@ def merge_log(filepath, outfile):
 
 def settask(msg):
     if "ENavigationFoward" in msg:
-        return "[消息] 导航直行" + " " + ' '.join(msg[7:11])
+        # return "[消息] 导航直行" + " " + ' '.join(msg[7:11])
+        return "[消息] 导航直行"
     elif "ECoverageFoward" in msg:
         return "[消息] 覆盖直行(弓形清扫)"
     elif "ETurnRight" in msg:
@@ -184,7 +184,8 @@ def settask(msg):
     elif "EStopMove" in msg:
         return "[消息] 停止运动"
     elif "ESendChargeDock" in msg:
-        return "[消息] 发送充电座坐标" + " " +msg[7]
+        # return "[消息] 发送充电座坐标" + " " +msg[7]
+        return "[消息] 发送充电座坐标"
     elif "ECloseAllDevices" in msg:
         return "[消息] 关闭所有设备"
     elif "ECloseBSDevice" in msg:
@@ -1003,8 +1004,8 @@ def state_log3():
                 writelog(log_list[1], "[INFO] 检测到没有覆盖区域")
             
             elif "find uncovered area" in i and not ignore(i):
-                writelog(log_list[1], "[INFO] 找到未覆盖区域%s" % ''.join(log_list[9:13]).rstrip(","))
-
+                # writelog(log_list[1], "[INFO] 找到未覆盖区域%s" % ''.join(log_list[9:13]).rstrip(","))
+                writelog(log_list[1], "[INFO] 找到未覆盖区域")
         # elif keyvalue8 in i and not ignore(i):
         #     # print(log_list)
         #     print(log_list[1],faultnum(log_list[16][8:].strip("[]")))
@@ -1070,11 +1071,11 @@ def state_log3():
             writelog(log_list[1], faultnum(log_list[12]))        
 
         elif "_GotoNextCleanArea" in i and not ignore(i):
-            writelog(log_list[1], "[消息] 去下一个分区",log_list[5].strip())
-        
+            # writelog(log_list[1], "[消息] 去下一个分区",log_list[5].strip())
+            writelog(log_list[1], "[消息] 去下一个分区")
         elif "CMotionPlanTask::UpdateForbiddenSetting" in i and "ForbiddenZone" in i and not ignore(i):
-            writelog(log_list[1], "[消息] 更新虚拟禁区设置", ''.join(log_list[7:]))
-
+            # writelog(log_list[1], "[消息] 更新虚拟禁区设置", ''.join(log_list[7:]))
+            writelog(log_list[1], "[消息] 更新虚拟禁区设置")
         elif "CMotionPlanTask::GetWalkStatus" in i and not ignore(i):
             if "stopped1111111111111111" in i:
                 writelog(log_list[1], "[状态] 停止状态")
@@ -1083,14 +1084,14 @@ def state_log3():
                 writelog(log_list[1], "[状态] 区域分割延边时碰撞停止")
         
         elif "Area Can not find Entry" in i and not ignore(i):
-            writelog(log_list[1], "[状态] 区域无法找到入口",i.split('-')[1].strip())
-
+            # writelog(log_list[1], "[状态] 区域无法找到入口",i.split('-')[1].strip())
+            writelog(log_list[1], "[状态] 区域无法找到入口")
         elif "We Think Area Is Cleand" in i and not ignore(i):
-            writelog(log_list[1], "[状态] 区域清扫完成", ''.join(log_list[11:]))
-
+            # writelog(log_list[1], "[状态] 区域清扫完成", ''.join(log_list[11:]))
+            writelog(log_list[1], "[状态] 区域清扫完成")
         elif "Area Entry Pos" in i and not ignore(i):
-            writelog(log_list[1], "[状态] 找到区域入口",i.split('-')[1].strip())
-        
+            # writelog(log_list[1], "[状态] 找到区域入口",i.split('-')[1].strip())
+            writelog(log_list[1], "[状态] 找到区域入口")
         elif "start path failed" in i and not ignore(i):
             writelog(log_list[1], "[error] 搜路去起始点失败")
 
@@ -1105,17 +1106,19 @@ def state_log3():
                 wheelL=log_list[6].replace("=",",").split(",")[21]
                 wheelR=log_list[6].replace("=",",").split(",")[23]
                 if abs(abs(int(wheelL)) - abs(int(wheelR))) > 25:
-                    writelog(log_list[1],"[error] 轮组差速异常", "左轮：%s,右轮：%s" %(wheelL, wheelR)) 
+                    # writelog(log_list[1],"[error] 轮组差速异常", "左轮：%s,右轮：%s" %(wheelL, wheelR)) 
+                    writelog(log_list[1],"[error] 轮组差速异常")
                 # elif wheelL == 0 and wheelR == 0:
                 #     print(log_list[1],"[error] 轮组转速异常", "左轮：%s,右轮：%s" %(wheelL, wheelR)) 
                 elif wheelL > 46 or wheelR > 46:
-                    writelog(log_list[1],"[error] 轮组转速异常", "左轮：%s,右轮：%s" %(wheelL, wheelR)) 
+                    # writelog(log_list[1],"[error] 轮组转速异常", "左轮：%s,右轮：%s" %(wheelL, wheelR)) 
+                    writelog(log_list[1],"[error] 轮组转速异常")
             except BaseException as e:
                 pass
         
-        elif "search_time" in i and not ignore(i):
-            # print(len(log_list))
-            writelog(log_list[1], "[INFO] 单次搜索时间 %sms" % log_list[11].split("=")[1], ''.join(log_list[6:11]).rstrip(","))
+        # elif "search_time" in i and not ignore(i):
+        #     # print(len(log_list))
+        #     writelog(log_list[1], "[INFO] 单次搜索时间 %sms" % log_list[11].split("=")[1], ''.join(log_list[6:11]).rstrip(","))
 
         elif "get_closet_cell_run_time" in i and not ignore(i):
             writelog(log_list[1], "[INFO] 区域搜索时间 %sms" % log_list[7].split("=")[1])
