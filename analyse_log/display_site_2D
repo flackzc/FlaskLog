@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+# _*_ coding:utf-8 _*_
+# 
+# Version: 0.0.1
+# Date:2020.02
+# Author: yjz
+#
+
+import matplotlib.pyplot as plt
+import numpy as np
+import sys
+#from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+
+#print('Command has', len(sys.argv), 'arguments.')
+#print('Argument list is', str(sys.argv))
+
+if len(sys.argv) < 2:
+    print("sys.argv[0] file_name")
+    exit
+
+file_name = sys.argv[1]
+print(file_name)
+
+x,y,z = np.loadtxt(file_name, delimiter=',', unpack=True, usecols=[1,2,3])
+plt.figure(figsize=(20, 20))
+plt.axis("equal")
+plt.plot(x, y, ',', label='trail', color='blue')
+plt.plot(x,y,linewidth=0.5) #设置线条宽度
+#plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文乱码问题
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('trail')
+#plt.title('轨迹')
+plt.legend()
+plt.gcf().set_size_inches(20,20)
+plt.savefig("./output/trail_2D.png")
+
+plt.show()
+

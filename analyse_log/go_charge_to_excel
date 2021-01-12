@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+# _*_ coding:utf-8 _*_
+# 
+# Version: 0.0.1
+# Date:2020.02
+# Author: yjz
+#
+
+import xlwt
+
+
+def set_style(name, height, bold=False):
+    style = xlwt.XFStyle()   # 初始化样式
+    font = xlwt.Font()       # 为样式创建字体
+    font.name = name
+    font.bold = bold
+    font.color_index = 4
+    font.height = height
+
+    style.font = font
+    return style
+
+
+def write_excel(path):
+    # 创建工作簿
+    workbook = xlwt.Workbook(encoding='utf-8')
+    # 创建sheet
+    data_sheet = workbook.add_sheet('go_charge')
+    row0 = [u'时间', u'回充原因']
+    row1 = ['15:50:33-15:52:14', 'clean done']
+    # 生成第一行和第二行
+    for i in range(len(row0)):
+        data_sheet.write(0, i, row0[i], set_style('Times New Roman', 180, True))
+        data_sheet.write(1, i, row1[i], set_style('Times New Roman', 180, True))
+
+    # 保存文件
+    workbook.save(path)
+
+
+if __name__ == '__main__':
+    # 设置路径
+    path = './output/go_charge.xls'
+    write_excel(path)
+    print(u'创建文件成功')
+

@@ -1,0 +1,274 @@
+#!/usr/bin/env python3
+# _*_ coding:utf-8 _*_
+#
+# Version: 0.0.1
+# Date:2020.02
+# Author: yjz
+#
+
+import sys
+import numpy as np
+import matplotlib.pyplot as plt
+import os 
+#import matplotlib.patches as patches
+
+if len(sys.argv) < 5:
+    print("sys.argv[0] output/region_segmentation.log output/cell_segmentation.log output/BodyPose.log output/MachineInit_S.log ")
+    exit
+
+def DrawRect(x1, y1, x2, y2, color):
+    return plt.Rectangle((x1, y1), x2 - x1, y2 - y1, fill=False, edgecolor=color)
+
+class Cursor(object):
+    def __init__(self, ax):
+        self.ax = ax
+        self.lx = ax.axhline(color='k')  # the horiz line
+        self.ly = ax.axvline(color='k')  # the vert line
+
+        # text location in axes coords
+        self.txt = ax.text(0.7, 0.9, '', transform=ax.transAxes)
+
+    def mouse_move(self, event):
+        if not event.inaxes:
+            return
+
+        x, y = event.xdata, event.ydata
+        # update the line positions
+        self.lx.set_ydata(y)
+        self.ly.set_xdata(x)
+
+        self.txt.set_text('x=%1.2f, y=%1.2f' % (x, y))
+        plt.draw()
+
+
+class SnaptoCursor(object):
+    """
+    Like Cursor but the crosshair snaps to the nearest x,y point
+    For simplicity, I'm assuming x is sorted
+    """
+
+    def __init__(self, ax, t, x, y, z):
+        self.ax = ax
+        self.lt = ax.axhline(color='k')
+        self.lx = ax.axhline(color='k')  # the horiz line
+        self.ly = ax.axvline(color='k')  # the vert line
+        self.lz = ax.axvline(color='k') 
+        self.t = t
+        self.x = x
+        self.y = y
+        self.z = z
+        self.points = np.array([complex(self.x[i], self.y[i]) for i in range(len(self.x))])
+        # text location in axes coords
+        self.txt = ax.text(0.7, 0.9, '', transform=ax.transAxes)
+        self.indx = 0
+
+    def draw(self):
+        t = self.t[self.indx]
+        x = self.x[self.indx]
+        y = self.y[self.indx]
+        z = self.z[self.indx]
+        # update the line positions
+        self.lx.set_ydata(y)
+        self.ly.set_xdata(x)
+
+        #self.txt.set_text('x=%1.2f, y=%1.2f, angle=%1.2f, time=%s' % (x, y, z, t))
+        plt.title('x=%1.2f, y=%1.2f, angle=%1.2f, time=%s' % (x, y, z, t))
+        print('x=%1.2f, y=%1.2f, angle=%1.2f, time=%s' % (x, y, z, t))
+        plt.draw()
+
+    def mouse_press(self, event):
+        if not event.inaxes:
+            return  
+
+        x, y = event.xdata, event.ydata
+
+        # self.indx = min(np.searchsorted(self.x, [x])[0], len(self.x) - 1)
+        self.indx = (np.abs(self.points - complex(x, y))).argmin()
+        self.draw()
+
+    def press(self, event):
+        print('press', event.key)
+        sys.stdout.flush()
+        if event.key == 'left':
+            self.indx = self.indx - 1
+            if self.indx < 0:
+                self.indx = 0
+            self.draw()
+        elif event.key == 'right':
+            self.indx = self.indx + 1
+            if self.indx > len(self.x) - 1:
+                self.indx = len(self.x) - 1
+            self.draw()
+
+
+cleantimes_file = sys.argv[4]
+size0 = os.path.getsize(sys.argv[4])
+cleantimes = []
+if size0 == 0:
+    cleantimes.append(-1)
+else:
+	with open(cleantimes_file,"r") as file:
+		line = file.readline().split()
+		cleantimes.append(int(line[0]))
+		
+		
+#print(cleantimes)
+
+ 
+size1 = os.path.getsize(sys.argv[1])
+size2 = os.path.getsize(sys.argv[2])
+size3 = os.path.getsize(sys.argv[3])
+
+if size1 == 0:
+    timessort1=[0]
+else:
+    timessort1 = np.loadtxt(sys.argv[1], delimiter=',', unpack=True, usecols=[-1],dtype=str)
+
+
+
+if size2 == 0:
+    timessort2=[0]
+else:
+    timessort2 = np.loadtxt(sys.argv[2], delimiter=',', unpack=True, usecols=[-1],dtype=str)
+if size3 == 0:
+    timessort3=[0]
+else:
+    timessort3 = np.loadtxt(sys.argv[3], delimiter=',', unpack=True, usecols=[0],dtype=str)
+
+
+
+data1,data2,data3 = [0], [0],[0]
+#print(len(timessort))
+for i in range(len(cleantimes)):
+	try:
+		nulluse = len(timessort1)
+	except:
+		timessort1=[timessort1]	
+	for j in range(data1[i],):
+		if  int(timessort1[j]) > cleantimes[i]:
+			if j != 0 :
+				data1.append(j)
+			break	
+
+data1.append(len(timessort1))	
+data1=list(sorted(set(data1)))
+#print(data1)
+
+for i in range(len(cleantimes)):
+	try:
+		nulluse = len(timessort2)
+	except:
+		timessort2=[timessort2]	
+	for j in range(data2[i],len(timessort2)):
+		if  int(timessort2[j]) > cleantimes[i]:
+			if j != 0 :
+				data2.append(j)
+			break
+data2.append(len(timessort2))	
+data2=list(sorted(set(data2)))
+#print(data2)
+
+for i in range(len(cleantimes)):
+	try:
+		nulluse = len(timessort3)
+	except:
+		timessort3=[timessort3]	
+	for j in range(data3[i],len(timessort3)):
+		if  int(timessort3[j]) > cleantimes[i]:
+			if j != 0 :
+				data3.append(j)
+			break
+data3.append(len(timessort3))	
+data3=list(sorted(set(data3)))
+#print(data3)
+
+file_name3 = sys.argv[3]
+#x, y, z = np.loadtxt(file_name1, delimiter=',', unpack=True)
+X,Y,Z = np.loadtxt(file_name3, delimiter=',', unpack=True, usecols=[2,3,4])
+ST = np.loadtxt(file_name3, delimiter=',', unpack=True, dtype=str, usecols=[1])
+
+
+cout1,cout2 = 0,0
+file_name1 = sys.argv[1]
+file1 = open(file_name1, 'r')
+read_all1 = False
+file_name2 = sys.argv[2]
+file2 = open(file_name2, 'r')
+read_all2 = False
+for i in range(len(data1) - 1):	
+	plt.figure(i)
+	# 绘制区域分割的结果
+	#print(file_name)
+	#将画布分为1*1
+	ax = plt.subplot(111)
+	#不设置时：画布大小随坐标值变化
+	#ax.axis([-5000,5000,-5000,5000])
+	#ax.axis([-10000,10000,-10000,10000])
+	#ax.axis([-20000,20000,-20000,20000])	
+	
+
+	while (not read_all1) and (data1[i] <= cout1 < data1[i+1]) :
+		line1 = file1.readline()
+		if not line1:
+			read_all1 = True
+			break
+		line_elements1 = line1.split(',')
+		minx1 = int(line_elements1[0])
+		miny1 = int(line_elements1[1])
+		maxx1 = int(line_elements1[2])
+		maxy1 = int(line_elements1[3])
+		#print("minx, miny, maxx, maxy:", minx, miny, maxx, maxy)
+		xd1 = maxx1 - minx1
+		yd1 = maxy1 - miny1
+		#print("xd, yd:", xd, yd)
+		#ax.add_patch(patches.Rectangle((minx, miny), xd, yd))    #框内填充颜色
+		ax.add_patch(
+			plt.Rectangle((minx1, miny1), xd1, yd1, fill=False,
+						edgecolor="red"))  #框内不填充颜色
+		cout1+=1
+		
+	#file.close()
+
+	# 绘制子区域分割的结果
+	ax = plt.subplot(111)
+	while (not read_all2) and (data2[i] <= cout2 < data2[i+1]) :
+		line2 = file2.readline()
+		if not line2:
+			read_all2 = True
+			break
+		line_elements2 = line2.split(',')
+		minx2 = int(line_elements2[0])
+		miny2 = int(line_elements2[1])
+		maxx2 = int(line_elements2[2])
+		maxy2 = int(line_elements2[3])
+		xd2 = maxx2 - minx2
+		yd2 = maxy2 - miny2
+		ax.add_patch(
+			plt.Rectangle((minx2, miny2), xd2, yd2, fill=False,
+						edgecolor="orange"))  #框内不填充颜色
+		cout2 += 1
+
+
+
+	x,y,z = X[data3[i]:data3[i+1]],Y[data3[i]:data3[i+1]],Z[data3[i]:data3[i+1]]
+	st = ST[data3[i]:data3[i+1]]
+	
+	# 移动鼠标，显示坐标
+	cursor = SnaptoCursor(ax, st, x, y, z)
+	plt.connect('button_press_event', cursor.mouse_press)
+	plt.connect('key_press_event', cursor.press)
+
+	# 轨迹
+	plt.plot(x,y,linewidth=0.5) #设置线条宽度
+	plt.plot(x, y, ',', label='map', color='blue')
+	plt.xlabel('x')
+	plt.ylabel('y')
+	plt.title('map')
+	plt.legend()
+	plt.gcf().set_size_inches(20, 20)
+	ax = plt.gca()
+	ax.set_aspect(1)
+file1.close()
+file2.close()
+plt.show()
+

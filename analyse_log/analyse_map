@@ -1,0 +1,457 @@
+#!/usr/bin/env python3
+# _*_ coding:utf-8 _*_
+#
+# Version: 0.0.1
+# Date:2020.02
+# Author: yjz
+#
+import os
+import sys
+import numpy as np
+import matplotlib.pyplot as plt
+#import matplotlib.patches as patches
+
+if len(sys.argv) < 8:
+    print("sys.argv[0] output/region_segmentation.log output/cell_segmentation.log output/BodyPose.log output/UpdateOdomPose.log output/callback.log output/wavesensor.log output/recvcount.log")
+    exit
+
+def DrawRect(x1, y1, x2, y2, color):
+    return plt.Rectangle((x1, y1), x2 - x1, y2 - y1, fill=False, edgecolor=color)
+
+class Cursor(object):
+    def __init__(self, ax):
+        self.ax = ax
+        self.lx = ax.axhline(color='k')  # the horiz line
+        self.ly = ax.axvline(color='k')  # the vert line
+
+        # text location in axes coords
+        self.txt = ax.text(0.7, 0.9, '', transform=ax.transAxes)
+
+    def mouse_move(self, event):
+        if not event.inaxes:
+            return
+
+        x, y = event.xdata, event.ydata
+        # update the line positions
+        self.lx.set_ydata(y)
+        self.ly.set_xdata(x)
+
+        self.txt.set_text('x=%1.2f, y=%1.2f' % (x, y))
+        plt.draw()
+
+
+class SnaptoCursor(object):
+    """
+    Like Cursor but the crosshair snaps to the nearest x,y point
+    For simplicity, I'm assuming x is sorted
+    """
+
+    def __init__(self, ax, t, x, y, z):
+        self.ax = ax
+        self.lt = ax.axhline(color='k')
+        self.lx = ax.axhline(color='k')  # the horiz line
+        self.ly = ax.axvline(color='k')  # the vert line
+        self.lz = ax.axvline(color='k') 
+        self.t = t
+        self.x = x
+        self.y = y
+        self.z = z
+        self.points = np.array([complex(self.x[i], self.y[i]) for i in range(len(self.x))])
+        # text location in axes coords
+        self.txt = ax.text(0.7, 0.9, '', transform=ax.transAxes)
+        self.indx = 0
+
+    def draw(self):
+        t = self.t[self.indx]
+        x = self.x[self.indx]
+        y = self.y[self.indx]
+        z = self.z[self.indx]
+        # update the line positions
+        self.lx.set_ydata(y)
+        self.ly.set_xdata(x)
+
+        #self.txt.set_text('x=%1.2f, y=%1.2f, angle=%1.2f, time=%s' % (x, y, z, t))
+        plt.title('x=%1.2f, y=%1.2f, angle=%1.2f, time=%s' % (x, y, z, t))
+        print('x=%1.2f, y=%1.2f, angle=%1.2f, time=%s' % (x, y, z, t))
+        plt.draw()
+
+    def mouse_press(self, event):
+        if not event.inaxes:
+            return  
+
+        x, y = event.xdata, event.ydata
+
+        # self.indx = min(np.searchsorted(self.x, [x])[0], len(self.x) - 1)
+        self.indx = (np.abs(self.points - complex(x, y))).argmin()
+        self.draw()
+
+    def press(self, event):
+        print('press', event.key)
+        sys.stdout.flush()
+        if event.key == 'left':
+            self.indx = self.indx - 1
+            if self.indx < 0:
+                self.indx = 0
+            self.draw()
+        elif event.key == 'right':
+            self.indx = self.indx + 1
+            if self.indx > len(self.x) - 1:
+                self.indx = len(self.x) - 1
+            self.draw()
+
+
+# 绘制区域分割的结果
+file_name = sys.argv[1]
+ax0 = plt.subplot(1,1,1)
+#print(file_name)
+#不设置时：画布大小随坐标值变化
+# ax1.axis([-5000,5000,-5000,5000])
+# ax1.axis([-10000,10000,-10000,10000])
+#ax.axis([-20000,20000,-20000,20000])
+
+file = open(file_name, 'r')
+read_all = False
+while not read_all:
+    line = file.readline()
+    if not line:
+        read_all = True
+        break
+    line_elements = line.split(',')
+    minx = int(line_elements[0])
+    miny = int(line_elements[1])
+    maxx = int(line_elements[2])
+    maxy = int(line_elements[3])
+    #print("minx, miny, maxx, maxy:", minx, miny, maxx, maxy)
+    xd = maxx - minx
+    yd = maxy - miny
+    #print("xd, yd:", xd, yd)
+    #ax.add_patch(patches.Rectangle((minx, miny), xd, yd))    #框内填充颜色
+    ax0.add_patch(
+        plt.Rectangle((minx, miny), xd, yd, fill=False,
+                      edgecolor="red"))  #框内不填充颜色
+
+file.close()
+
+# 绘制子区域分割的结果
+file_name = sys.argv[2]
+ax1 = plt.subplot(1,1,1)
+
+file = open(file_name, 'r')
+read_all = False
+while not read_all:
+    line = file.readline()
+    if not line:
+        read_all = True
+        break
+    line_elements = line.split(',')
+    minx = int(line_elements[0])
+    miny = int(line_elements[1])
+    maxx = int(line_elements[2])
+    maxy = int(line_elements[3])
+    xd = maxx - minx
+    yd = maxy - miny
+    ax1.add_patch(
+        plt.Rectangle((minx, miny), xd, yd, fill=False,
+                      edgecolor="orange"))  #框内不填充颜色
+
+file.close()
+
+
+#Slam轨迹
+# file_name1 = sys.argv[3]
+# file = open(file_name1, 'r')
+# line = file.readline()
+# if line:
+#     #x, y, z = np.loadtxt(file_name1, delimiter=',', unpack=True)
+#     x1,y1,z1 = np.loadtxt(file_name1, delimiter=',', unpack=True, usecols=[1,2,3])
+#     st1 = np.loadtxt(file_name1, delimiter=',', unpack=True, dtype=str, usecols=[0])
+#     plt.figure("map-bodypose")
+#     ax2 = plt.subplot(1,1,1)
+#     # 移动鼠标，显示坐标
+#     cursor1 = SnaptoCursor(ax2, st1, x1, y1, z1)
+#     plt.connect('button_press_event', cursor1.mouse_press)
+#     plt.connect('key_press_event', cursor1.press)
+
+#     # 轨迹
+#     plt.plot(x1,y1,linewidth=0.5) #设置线条宽度
+#     plt.plot(x1, y1, ',', label='BodyPose', color='blue')
+#     plt.xlabel('x')
+#     plt.ylabel('y')
+#     plt.title('map-BodyPose')
+#     plt.legend()
+#     plt.gcf().set_size_inches(20, 20)
+#     ax2 = plt.gca()
+#     ax2.set_aspect(1)
+
+# file.close()
+
+if os.path.getsize("./output/EArroundBarrier.log") and os.path.getsize("./output/EDefault.log") and os.path.getsize("./output/EGotoCharge.log") and os.path.getsize("./output/EStartChargePath.log") and os.path.getsize("./output/EForwardWall.log") and os.path.getsize("./output/EForward.log") and os.path.getsize('./output/ENavigationFoward.log') and os.path.getsize('./output/ECoverageFoward.log') and os.path.getsize('./output/ETurnRight.log') and os.path.getsize('./output/ETurnLeft.log'):
+        x1,y1,z1 = np.loadtxt("./output/ENavigationFoward.log", delimiter=',', unpack=True, usecols=[1,2,3])
+        plt.plot(x1, y1, ',', label='ENavigationFoward', color='blue')
+        st1 = np.loadtxt("./output/ENavigationFoward.log", delimiter=',', unpack=True, dtype=str, usecols=[0])
+
+        x2,y2,z2 = np.loadtxt("./output/ECoverageFoward.log", delimiter=',', unpack=True, usecols=[1,2,3])
+        plt.plot(x2, y2, ',', label='ECoverageFoward', color='green')
+        st2 = np.loadtxt("./output/ECoverageFoward.log", delimiter=',', unpack=True, dtype=str, usecols=[0])
+
+        x3,y3,z3 = np.loadtxt("./output/ETurnRight.log", delimiter=',', unpack=True, usecols=[1,2,3])
+        plt.plot(x3, y3, ',', label='ETurnRight', color='green')
+        st3 = np.loadtxt("./output/ETurnRight.log", delimiter=',', unpack=True, dtype=str, usecols=[0])
+
+        x4,y4,z4 = np.loadtxt("./output/ETurnLeft.log", delimiter=',', unpack=True, usecols=[1,2,3])
+        plt.plot(x4, y4, ',', label='ETurnLeft', color='green')
+        st4 = np.loadtxt("./output/ETurnLeft.log", delimiter=',', unpack=True, dtype=str, usecols=[0])
+
+        x5,y5,z5 = np.loadtxt("./output/EForward.log", delimiter=',', unpack=True, usecols=[1,2,3])
+        plt.plot(x5, y5, ',', label='EForward', color='green')
+        st5 = np.loadtxt("./output/EForward.log", delimiter=',', unpack=True, dtype=str, usecols=[0])
+
+        x6,y6,z6 = np.loadtxt("./output/EForwardWall.log", delimiter=',', unpack=True, usecols=[1,2,3])
+        plt.plot(x6, y6, ',', label='EForwardWall', color='red')
+        st6 = np.loadtxt("./output/EForwardWall.log", delimiter=',', unpack=True, dtype=str, usecols=[0])
+
+        x7,y7,z7 = np.loadtxt("./output/EStartChargePath.log", delimiter=',', unpack=True, usecols=[1,2,3])
+        plt.plot(x7, y7, ',', label='EStartChargePath', color='red')
+        st7 = np.loadtxt("./output/EStartChargePath.log", delimiter=',', unpack=True, dtype=str, usecols=[0])
+
+        x8,y8,z8 = np.loadtxt("./output/EGotoCharge.log", delimiter=',', unpack=True, usecols=[1,2,3])
+        plt.plot(x8, y8, ',', label='EGotoCharge', color='red')
+        st8 = np.loadtxt("./output/EGotoCharge.log", delimiter=',', unpack=True, dtype=str, usecols=[0])
+
+        x9,y9,z9 = np.loadtxt("./output/EArroundBarrier.log", delimiter=',', unpack=True, usecols=[1,2,3])
+        plt.plot(x9, y9, ',', label='EArroundBarrier', color='red')
+        st8 = np.loadtxt("./output/EArroundBarrier.log", delimiter=',', unpack=True, dtype=str, usecols=[0]) 
+
+        x10,y10,z10 = np.loadtxt("./output/EDefault.log", delimiter=',', unpack=True, usecols=[1,2,3])
+        plt.plot(x10, y10, ',', label='EDefault', color='black')
+        st10 = np.loadtxt("./output/EDefault.log", delimiter=',', unpack=True, dtype=str, usecols=[0])
+
+        # plt.figure("map-bodypose-detail")
+        # ax1 = plt.subplot(1,1,1)
+        cursor1 = SnaptoCursor(ax1, st1, x1, y1, z1)
+        plt.connect('button_press_event', cursor1.mouse_press)
+        plt.connect('key_press_event', cursor1.press)
+
+        # cursor6= SnaptoCursor(ax1, st8, x8, y8, z8)
+        # plt.connect('button_press_event', cursor6.mouse_press)
+        # plt.connect('key_press_event', cursor6.press)
+
+        plt.xlabel('x')
+        plt.ylabel('y')
+        plt.title('map-BodyPose-detail')
+        plt.legend(loc = 'best')
+        plt.gcf().set_size_inches(20, 20)
+        ax1 = plt.gca()
+        ax1.set_aspect(1)
+        plt.savefig('map-BodyPose-detail.png')
+else:
+    file_name1 = sys.argv[3]
+    file = open(file_name1, 'r')
+
+    line = file.readline()
+    if line:
+        # x, y, z = np.loadtxt(file_name1, delimiter=',', unpack=True)
+
+            x1,y1,z1 = np.loadtxt(file_name1, delimiter=',', unpack=True, usecols=[1,2,3])
+            st1 = np.loadtxt(file_name1, delimiter=',', unpack=True, dtype=str, usecols=[0])
+
+        # plt.figure("map-bodypose")
+        # ax1 = plt.subplot(1,1,1)
+        # 移动鼠标，显示坐标
+
+            cursor1 = SnaptoCursor(ax1, st1, x1, y1, z1)
+            plt.connect('button_press_event', cursor1.mouse_press)
+            plt.connect('key_press_event', cursor1.press)
+
+            # 轨迹
+            plt.plot(x1,y1,linewidth=0.5)   
+            plt.plot(x1, y1, ',', label='BodyPose', color='blue')
+
+            plt.xlabel('x')
+            plt.ylabel('y')
+            plt.title('map-BodyPose')
+            plt.legend()
+            plt.gcf().set_size_inches(20, 20)
+            ax1 = plt.gca()
+            ax1.set_aspect(1)
+            plt.savefig('map-BodyPose.png')
+
+
+
+#码盘轨迹
+file_name1 = sys.argv[4]
+plt.figure("map-UpdateOdomPose")
+ax2 = plt.subplot(1,1,1)
+file = open(file_name1, 'r')
+line = file.readline()
+
+#x, y, z = np.loadtxt(file_name1, delimiter=',', unpack=True)
+if os.path.getsize(file_name1):
+
+        x12,y12,z12 = np.loadtxt(file_name1, delimiter=',', unpack=True, usecols=[1,2,3])
+        st2 = np.loadtxt(file_name1, delimiter=',', unpack=True, dtype=str, usecols=[0])
+
+    # 移动鼠标，显示坐标
+    # x12, y12 = -y12, x12
+
+        cursor2 = SnaptoCursor(ax2, st2,y12,x12,z12)
+        plt.connect('button_press_event', cursor2.mouse_press)
+        plt.connect('key_press_event', cursor2.press)
+
+        # 轨迹
+        #x2 = -x2
+        #y2 = -y2
+        plt.plot(y12,x12,linewidth=0.5) #设置线条宽度
+        plt.plot(y12,x12, ',', label='UpdateOdomPose', color='blue')
+        plt.xlabel('x')
+        plt.ylabel('y')
+        plt.title('map-UpdateOdomPose')
+        plt.legend()
+        plt.gcf().set_size_inches(20, 20)
+        ax2 = plt.gca()
+        ax2.set_aspect(1)
+        ax2.invert_xaxis()
+        plt.savefig('map-BodyPose.png')
+
+
+
+#Slam数据点数量
+file_name1 = sys.argv[5]
+plt.figure("Slam-callback")
+ax3 = plt.subplot(1,1,1)
+file = open(file_name1, 'r')
+line = file.readline()
+if line:
+    #x, y, z = np.loadtxt(file_name1, delimiter=',', unpack=True)
+
+        y3_1,y3_2 = np.loadtxt(file_name1, delimiter=',', unpack=True, usecols=[1,2])
+        st3 = np.loadtxt(file_name1, delimiter=',', unpack=True, dtype=str, usecols=[0])
+
+
+
+        use_st3, use_y1 , use_y2 = [],[],[]
+        for i in range(len(y3_1)):
+            if y3_1[i] <= 200 :
+                use_y1.append(y3_1[i])
+                use_y2.append(y3_2[i])
+                use_st3.append(st3[i])
+                continue
+            else:
+                if y3_1[i] - y3_2[i] >= 30:
+                    use_y1.append(y3_1[i])
+                    use_y2.append(y3_2[i])
+                    use_st3.append(st3[i])
+                    continue
+        # 移动鼠标，显示坐标
+        cursor3 = SnaptoCursor(ax3, use_st3, range(len(use_y1)), use_y1, use_y2)
+        plt.connect('button_press_event', cursor3.mouse_press)
+        plt.connect('key_press_event', cursor3.press)
+        # 轨迹
+        plt.plot(range(5,len(use_y1)+5),use_y1, color='r',linewidth=0.5,label='First col') 
+        plt.plot(range(5,len(use_y1)+5),use_y2, color='b',linewidth=0.5,label='Second col') 
+        plt.xlabel('x')
+        plt.ylabel('y')
+        ax3.set_ylim(50, 260)
+        # my_x_ticks = np.arange(1, 14, 1)
+        # plt.xticks(my_x_ticks)
+        plt.title('Slam-callback')
+        plt.legend()
+        plt.gcf().set_size_inches(20, 20)
+        plt.savefig('Slam-callback.png')
+
+
+#超声波检测数据
+file_name1 = sys.argv[6]
+file = open(file_name1, 'r')
+line = file.readline()
+if line:
+
+        y4_1,y4_2 = np.loadtxt(file_name1, delimiter=',', unpack=True, usecols=[1,2])
+        st4 = np.loadtxt(file_name1, delimiter=',', unpack=True, dtype=str, usecols=[0])
+
+        # y4_1,y4_2 = np.loadtxt(file_name1, delimiter=',', unpack=True, usecols=[1,2])
+        # st4 = np.loadtxt(file_name1, delimiter=',', unpack=True, dtype=str, usecols=[0])
+        plt.figure("Wavesensor Recv From Mcu 04-42")
+        ax4 = plt.subplot(1,1,1)
+        use_st4, use_y3 , use_y4 = [],[],[]
+        for i in range(len(y4_1)):
+            if y4_1[i] < 2:
+                use_y3.append(y4_1[i])
+                use_y4.append(y4_2[i])
+                use_st4.append(st4[i])
+                continue
+            # else:
+            #     if y4_1[i] != y4_1[i-1]:
+            #         use_y3.append(y4_1[i])
+            #         use_y4.append(y4_2[i])
+            #         use_st4.append(st4[i])
+            #         continue
+
+
+        #移动鼠标，显示坐标
+        cursor4 = SnaptoCursor(ax4, use_st4, range(len(use_y3)), use_y3, use_y4)
+        plt.connect('button_press_event', cursor4.mouse_press)
+        plt.connect('key_press_event', cursor4.press)
+        #轨迹
+        plt.plot(range(5,len(use_y3)+5),use_y3, color='r',linewidth=0.5,label='OriginalResult') 
+        plt.plot(range(5,len(use_y4)+5),use_y4, color='b',linewidth=0.5,label='VoteResult') 
+        plt.xlabel('x')
+        plt.ylabel('y')
+        #ax3.set_ylim(100, 360)
+        plt.title('wavesensor From Mcu 04-42')
+        plt.legend()
+        plt.gcf().set_size_inches(20, 20)
+        
+
+#battery检测数据
+file_name1 = sys.argv[7]
+file = open(file_name1, 'r')
+line = file.readline()
+if line:
+
+        y5_1, y5_2, y5_3, y5_4 = np.loadtxt(file_name1, delimiter=',', unpack=True, usecols=[1,2,3,4])
+        st5 = np.loadtxt(file_name1, delimiter=',', unpack=True, dtype=str, usecols=[0])
+
+        # y4_1,y4_2 = np.loadtxt(file_name1, delimiter=',', unpack=True, usecols=[1,2])
+        # st4 = np.loadtxt(file_name1, delimiter=',', unpack=True, dtype=str, usecols=[0])
+        plt.figure("Battery Recv From Mcu")
+        ax5 = plt.subplot(1,1,1)
+        #use_st5, use_y5_1, use_y5_2, use_y5_3 = [],[],[],[]
+        use_st5, use_y5_1, use_y5_2, use_y5_3, use_y5_4 = [],[],[],[],[]
+        for i in range(len(y5_1)):
+            if y5_1[i] != 2:
+                #use_y3.append(y4_1[i])
+                use_y5_1.append(y5_1[i])
+                use_y5_2.append(y5_2[i])
+                use_y5_3.append(y5_3[i])
+                # use_st5.append(st5[i])
+                use_y5_4.append(y5_4[i])
+                use_st5.append(st5[i])
+                continue
+            # else:
+            #     if y5[i] != y5[i-1]:
+            #         #use_y3.append(y4_1[i])
+            #         use_y5.append(y5[i])
+            #         use_st5.append(st5[i])
+            #         continue
+
+
+        #移动鼠标，显示坐标
+        cursor5 = SnaptoCursor(ax5, use_st5, range(len(use_y5_1)), use_y5_1, use_y5_2)
+        # cursor5 = SnaptoCursor(ax5, use_y5_1, use_y5_2,use_y5_3, use_y5_4)
+        plt.connect('button_press_event', cursor5.mouse_press)
+        plt.connect('key_press_event', cursor5.press)
+        #轨迹
+        plt.plot(range(5,len(use_y5_1)+5),use_y5_1, color='y',linewidth=0.5,label='batstat')
+        plt.plot(range(5,len(use_y5_1)+5),use_y5_2, color='red',linewidth=0.5,label='mcuadv')
+        plt.plot(range(5,len(use_y5_1)+5),use_y5_3, color='blue',linewidth=0.5,label='mcuada') 
+        plt.plot(range(5,len(use_y5_1)+5),use_y5_4, color='black',linewidth=0.5,label='battery')
+        #plt.plot(range(5,len(use_y4)+5),use_y4, color='b',linewidth=0.5,label='VoteResult') 
+        plt.xlabel('x')
+        plt.ylabel('y')
+        #ax3.set_ylim(100, 360)
+        plt.title('Battery From Mcu')
+        plt.legend()
+        plt.gcf().set_size_inches(20, 20)
+        plt.savefig('battery.png')
+# plt.show()

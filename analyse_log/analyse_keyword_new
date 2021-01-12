@@ -1,0 +1,207 @@
+#!/usr/bin/env python3
+# _*_ coding:utf-8 _*_
+#
+# Version: 0.0.1
+# Date:2020.02
+# Author: yjz
+#
+
+import sys
+
+#print('Command has', len(sys.argv), 'arguments.')
+#print('Argument list is', str(sys.argv))
+
+if len(sys.argv) < 2:
+    print("sys.argv[0] file_name")
+    exit
+
+file_name = sys.argv[1]
+
+machine_state = [["MachineInit_S", "0初始状态"],
+["MachineAreaProcessing_S", "1区域沿边中"],
+["MachineCoverProcessing_S", "2区域覆盖中"],
+["MachineChargePathing_S", "3充电导航中"],
+["MachineChargeRedFinding_S", "4红外找充电座"],
+["MachineCharging_S", "5充电中"],
+["MachineLeavingChargePoint_S", "6离开充电座过程中"],
+["MachinePause_S", "7机器暂停"],
+["MachineError_S", "8机器异常"],
+["MachineProducing_S", "9进入产测模式"],
+["MachineGroscopAdjusting_S", "10陀螺仪校准模式"],
+["MachineStartSlamWaiting_S", "11slam启动等待中"]]
+
+machine_state_row=len(machine_state)
+#machine_state_column=len(machine_state[0]) #2
+
+
+message = [["MSG_LOWPOWER............", "1电量低"],
+["MSG_CHARGEOK............", "2充电OK"],
+["MSG_WHEELUP............", "3轮子抬起"],
+["MSG_WHEELDOWN............", "4轮子落地"],
+["MSG_ISCHARGING............", "5在充电座"],
+["MSG_UNCHARGING............", "6离开充电座"],
+["MSG_APP_PAUSE............", "7app暂停"],
+["MSG_APP_CONTINUE............", "8app恢复清扫"],
+["MSG_KEY_PAUSE_OR_CONTINUE............", "9按键的暂停或开始"],
+["MSG_KEY_GOTOCHARGE............", "10按键回充"],
+["MSG_HAVE_CHARGE_SIGNAL............", "11有充电座信号"],
+["MSG_NO_CHARGE_SIGNAL............", "12没有充电座信号"],
+["MSG_APP_CLEAR_MAPINFO............", "13app清空地图信息"],
+["MSG_APP_STOP............", "14app暂停"],
+["MSG_APP_GOTOCHARGE............", "15app充电消息"],
+["MSG_AUTO_CLEAN............", "16自动清扫"],
+["MSG_AREA_CLEAN............", "17按区域清扫"],
+["MSG_APP_CONTROL............", "18app端遥控"],
+["MSG_PRODUCING............", "19产线检测消息"],
+["MSG_PRODUCING_EXIT............", "20退出产测"],
+["MSG_LASER_NOT_RUN............", "21雷达不转故障"],
+["MSG_MCU_ERROR............", "22MCU故障"],
+["MSG_MCU_RECOVERY............", "23MCU故障恢复"],
+["MSG_ERROR_WHEELOVERLOAD............", "25轮子过载"],
+["MSG_ERROR_WINDOVERLOAD............", "26风机过载"],
+["MSG_ERROR_BSOVERLOAD............", "27边刷过载"],
+["MSG_ERROR_GSDOWN............", "28滚刷故障"],
+["MSG_ERROR_HITDOWN............", "29撞板故障"],
+["MSG_ERROR_DOWNLOAD............", "30跌落"],
+["MSG_RECOVER_WHEELOVERLOAD............", "31轮子过载恢复"],
+["MSG_RECOVER_WINDOVERLOAD............", "32风机过载恢复"],
+["MSG_RECOVER_BSOVERLOAD............", "33边刷过载恢复"],
+["MSG_RECOVER_GSDOWN............", "34滚刷故障恢复"],
+["MSG_RECOVER_HITDOWN............", "35撞板故障恢复"],
+["MSG_RECOVER_DOWNLOAD............", "36跌落恢复"],
+["MSG_ERROR_BOX............", "37尘盒未安装"],
+["MSG_RECOVER_BOX............", "38尘盒安装恢复"],
+["MSG_UPDATA_TIMEOUT............", "39上报数据超时"],
+["MSG_VIRTUAL_WALL............", "40设置虚拟墙"],
+["MSG_RESTRICT_AREA............ ", "41设置禁区"]]
+
+message_row=len(message)
+
+
+task_to_mcu=[["EForward", "1向前"],
+["ETurnLeft", "2向左"],
+["ETurnRight", "3向右"],
+["EFollowWall", "4沿边"],
+["EArroundBarrier", "5围绕障碍物"],
+["EForwardWall", "6向前墙"],
+["EBarrierForward", "7绕障碍的直线行走"],
+["ELeftSide", "8左沿边任务"],
+["ERightSide", "9右沿边任务"],
+["ENavigationFoward", "10导航直走"],
+["ECoverageFoward", "11弓字形直走"],
+["ELittleAreaFoward", "12小区域直走"],
+["EGotoCharge", "13去充电"],
+["ELeaveCharge", "14离开充电座"],
+["EStopMove", "15停止任何移动"],
+["EStopCleanDevice", "16关闭风机等设备"],
+["EStartChargePath", "17开始回充"],
+["EClearMcuStatus", "18清空mcu的状态"],
+["ESyncTime", "19同步时间戳"],
+["EOpenCleanDevice", "20打开风机设备"],
+["EOriginTurn", "21原地旋转,用于不是从充电座启动的时候"],
+["EOpenWindDevice", "22风机开"],
+["EOpenBSDevice", "23边刷开"],
+["EOpenGSDevice", "24滚刷开"],
+["EOpenWaterDevice", "25水泵开"],
+["ECloseWindDevice", "26风机关"],
+["ECloseBSDevice", "27边刷关"],
+["ECloseGSDevice", "28滚刷关"],
+["ECloseWaterDevice", "29水箱关"],
+["EStopChargePath", "30关红灯"],
+["ECloseAllDevices", "31关闭风机，水箱，滚刷，边刷"],
+["EOpenAllDevices", "32关闭风机，水箱，滚刷，边刷"],
+["ESendChargeDock", "33发送充电座位置"],
+["ESendLongStop", "34提示陀螺仪要长时间停止工作"]]
+
+task_to_mcu_row=len(message)
+
+
+file = open(file_name, 'r')
+error_file = open('./output/error.log', 'a+')
+analyse_file = open('./output/tmp.log', 'w')
+
+
+
+read_all = False
+while not read_all:
+    line = file.readline()
+    if not line:
+        read_all = True
+        break
+    line_elements = line.split( )
+#    print(line_elements[9])
+    if line_elements[4] == "CleanModelCtrl::SetNextMachineState":
+        if line_elements[9] == "MachineError_S":
+            error_file.write(line_elements[10] + " " +line_elements[1] + " " + line_elements[9] + " " + "7机器暂停" + "\n")
+
+        result = False
+        for i in range(machine_state_row):
+            if line_elements[9] == machine_state[i][0]:
+                analyse_file.write(line_elements[10] + " " + line_elements[1] + " " + line_elements[9] + " " + machine_state[i][1]  + "\n")
+                result = True
+                break
+        if result == False:
+            error_file.write(line_elements[10] + " " + line_elements[1] + " " + line_elements[9] + " " + "未说明" + "\n")
+            analyse_file.write(line_elements[10] + " " + line_elements[1] + " " + line_elements[9] + " " + "未说明" + "\n")
+#        print(result)
+#I0314 13:12:21.907049 358] [CLEAN] CleanModelCtrl::SetMessage - SetMessage into list  MSG_LOWPOWER............
+    elif line_elements[4] == "CleanModelCtrl::SetMessage":
+        if line_elements[6] == "SetMessage":
+            if line_elements[9] == "MSG_LOWPOWER............":
+                error_file.write(line_elements[1] + " " + line_elements[9] + " " + "1电量低" + "\n")
+            elif line_elements[9] == "MSG_WHEELUP............":
+                error_file.write(line_elements[1] + " " + line_elements[9] + " " + "3轮子抬起" + "\n")
+            elif line_elements[9] == "MSG_LASER_NOT_RUN............":
+                error_file.write(line_elements[1] + " " + line_elements[9] + " " + "21雷达不转故障" + "\n")
+            elif line_elements[9] == "MSG_MCU_ERROR............":
+                error_file.write(line_elements[1] + " " + line_elements[9] + " " + "22MCU故障" + "\n")
+            elif line_elements[9] == "MSG_ERROR_WHEELOVERLOAD............":
+                error_file.write(line_elements[1] + " " + line_elements[9] + " " + "25轮子过载" + "\n")
+            elif line_elements[9] == "MSG_ERROR_WINDOVERLOAD............":
+                error_file.write(line_elements[1] + " " + line_elements[9] + " " + "26风机过载" + "\n")
+            elif line_elements[9] == "MSG_ERROR_BSOVERLOAD............":
+                error_file.write(line_elements[1] + " " + line_elements[9] + " " + "27边刷过载" + "\n")
+            elif line_elements[9] == "MSG_ERROR_GSDOWN............":
+                error_file.write(line_elements[1] + " " + line_elements[9] + " " + "28滚刷故障" + "\n")
+            elif line_elements[9] == "MSG_ERROR_HITDOWN............":
+                error_file.write(line_elements[1] + " " + line_elements[9] + " " + "29撞板故障" + "\n")
+            elif line_elements[9] == "MSG_ERROR_DOWNLOAD............":
+                error_file.write(line_elements[1] + " " + line_elements[9] + " " + "30跌落" + "\n")
+            elif line_elements[9] == "MSG_ERROR_BOX............":
+                error_file.write(line_elements[1] + " " + line_elements[9] + " " + "37尘盒未安装" + "\n")
+        else:
+            continue
+
+        result = False
+        for i in range(message_row):
+            if line_elements[9] == message[i][0]:
+                analyse_file.write(line_elements[1] + " " + line_elements[9] + " " + message[i][1] + "\n")
+                result = True
+                break
+        if result == False:
+            error_file.write(line_elements[1] + " " + line_elements[9] + " " + "未说明" + "\n")
+            analyse_file.write(line_elements[1] + " " + line_elements[9] + " " + "未说明" + "\n")
+#I0212 14:44:50.394456 392] [MCU] CMcuOperator::SetTask - ENavigationFoward oOdoStart(1405.723781,-121.863278) m_oEndOdo(1680.000000,-180.000000) taskID=10948, nav_type=0, min_stop_dist=200, max_side_dist=2000
+#I0308 07:40:23.135905 380] [MCU] SetTask - ETurnRight oOdoStart(3039.142798,-6053.577867) m_oEndOdo(3039.000000,-6203.000000) taskID =10377
+    elif line_elements[4] == "SetTask" or line_elements[4] == "CMcuOperator::SetTask":
+        result = False
+        for i in range(task_to_mcu_row):
+            if line_elements[6] == task_to_mcu[i][0]:
+                analyse_file.write(line_elements[1] + " " + line_elements[6] + " " + task_to_mcu[i][1] + "\n")
+                result = True
+                break
+        if result == False:
+            error_file.write(line_elements[1] + " " + line_elements[6] + " " + "未说明" + "\n")
+            analyse_file.write(line_elements[1] + " " + line_elements[6] + " " + "未说明" + "\n")
+
+#I0314 12:25:49.152904 358] [MCU] Process0x03_0x37_0x01 - #TaskID=10744,sendID=10744,recvcount=198750,walkstate=1,sideState=2,version=10541,McuADv=1045,McuADa=65514,battery=60
+    elif line_elements[4] == "Process0x03_0x37_0x01":
+        analyse_file.write(line_elements[-1] + " " + line_elements[1] + "," + line_elements[6] + "\n")
+
+#I0326 12:34:55.938603 418] [CLEAN] CleanModelCtrl::GetMessage - MD_MEM vss=1312548.00, rss=58480.00
+    elif line_elements[4] == "CleanModelCtrl::GetMessage":
+        analyse_file.write(line_elements[1] + "=" + line_elements[8] + "\n")
+
+file.close()
+analyse_file.close()
+

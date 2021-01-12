@@ -1,0 +1,119 @@
+#!/usr/bin/env python3
+# _*_ coding:utf-8 _*_
+#
+# Version: 0.0.1
+# Date:2020.02
+# Author: yjz
+#
+
+import matplotlib.pyplot as plt
+import numpy as np
+import sys
+import os
+#from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+#print('Command has', len(sys.argv), 'arguments.')
+#print('Argument list is', str(sys.argv))
+
+if len(sys.argv) < 4:
+    print("sys.argv[0] file_name view_mode view_switch")
+    exit
+
+file_name = sys.argv[1]
+#print(file_name)
+
+view_mode = sys.argv[2]
+#print(view_mode)
+
+view_switch = sys.argv[3]
+#print(view_switch)
+
+file = open(file_name, 'r')
+site_file = open('./output/tmp.log', 'w')
+
+read_all = False
+while not read_all:
+    line = file.readline()
+    if not line:
+        read_all = True
+        break
+    line_elements = line.split( )
+#I0212 14:31:32.108222 4584] [COV] md_map::UpdatePose - BodyPose 25.119330, -3.804149, -54.131207 m_vecPath:14
+    site_file.write(line_elements[-1] + "," + line_elements[1] + "," + line_elements[7] + line_elements[8] + line_elements[9] + "\n")
+#    site_file.write(line_elements[0]  + line_elements[1] + line_elements[2]  + "\n")
+#    if line_elements[0] == "BodyPose":
+#        site_file.write(line_elements[1]  + line_elements[2] + line_elements[3]  + "\n")
+#        #print(line_elements)
+#    elif line_elements[0] == "LaserPose":
+#        site_file.write(line_elements[1]  + line_elements[2] + line_elements[3]  + "\n")
+#        #print(line_elements)
+
+
+file.close()
+site_file.close()
+
+if view_switch == "close":
+     sys.exit(0)
+
+X,Y,Z = np.loadtxt("./output/tmp.log", delimiter=',', unpack=True, usecols=[2,3,4])
+timessort,ST = np.loadtxt("./output/tmp.log", delimiter=',', unpack=True, dtype=str, usecols=[0,1])
+
+cleantimes_file = sys.argv[4]
+size0 = os.path.getsize(sys.argv[4])
+cleantimes = []
+if size0 == 0:
+    cleantimes.append(-1)
+else:
+	with open(cleantimes_file,"r") as file:
+		line = file.readline().split()
+		cleantimes.append(int(line[0]))
+
+data=[0]
+#print(cleantimes)
+for i in range(len(cleantimes)):
+	try:
+		nulluse = len(timessort)
+	except:
+		timessort=[timessort]	
+	for j in range(data[i],len(timessort)):
+		if  int(timessort[j]) > cleantimes[i]:
+			if j != 0 :
+				data.append(j)
+			break
+data.append(len(timessort))	
+data=list(sorted(set(data)))
+#print(data)
+
+
+
+for i in range(len(data) - 1):	
+	x = X[data[i]:data[i+1]]
+	y = Y[data[i]:data[i+1]]
+	z = Z[data[i]:data[i+1]]
+	st = ST[data[i]:data[i+1]]
+	
+	if view_mode == "3D":
+		#定义坐标轴
+		plt.figure(i)
+		ax1 = plt.axes(projection='3d')
+		ax1.scatter3D(x,y,z, cmap='Blues')  #绘制散点图
+		ax1.plot3D(x,y,z,'gray')    #绘制空间曲线
+		plt.gcf().set_size_inches(20,20)
+		plt.savefig("./output/trail_3D.png")
+	elif view_mode == "2D":
+		plt.figure(i,figsize=(20, 20))
+		plt.axis("equal")
+		plt.plot(x,y,linewidth=0.5) #设置线条宽度
+		plt.plot(x, y, ',', label='trail', color='blue')
+		plt.xlabel('x')
+		plt.ylabel('y')
+		plt.title('trail')
+		plt.legend()
+		plt.gcf().set_size_inches(20,20)
+		plt.savefig("./output/trail_2D.png")
+
+plt.show()
+
+
+

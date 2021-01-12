@@ -41,6 +41,9 @@ def xremove(removcelogname):
     except FileNotFoundError as e:
         pass
 
+def clear():
+    pass
+
 @app.route('/')
 def index():
     xremove(resultPath)
@@ -75,8 +78,36 @@ def analyse():
 @app.route("/draw", methods=['POST', 'GET'])
 def draw():
     # return "使用analyse_log analyse_map 绘图并页面显示"
-    return render_template('draw.html', name=name)
+    if not request.form.get('fname2'):
+        return render_template('error.html', name=name)
+    else:
+        inputLogName2 = request.form.get('fname2').strip(' ')
+        print(inputLogName2)
+        # os.system("rm -rf analyse_log/log/Log*.log")
+        os.system("echo 111")
+        print(logBasePath+inputLogName2)
+        os.system("scp "+logBasePath+inputLogName2+"/userdata/logs/LOG*.log analyse_log/log")
+        os.system("cd analyse_log;./analyse_log analyse_map;mv *.png ../static/outputimage/")
+        # for png in os.listdir("static/outputimage/"):
+        #     print(png)
+        #     xremove("static/outputimage/"+png)
+        # for logfile in os.listdir("analyse_log/log"):
+        #     print(logfile)
+        #     xremove("analyse_log/log/"+logfile)  
+        # xremove("static/outputimage/1.png")
+        return render_template('draw.html', name=name)
 
+
+@app.route("/delete", methods=['POST', 'GET'])
+def delete():
+    for png in os.listdir("static/outputimage/"):
+        print(png)
+        xremove("static/outputimage/"+png)
+    for logfile in os.listdir("analyse_log/log"):
+        print(logfile)
+        xremove("analyse_log/log/"+logfile)  
+    # xremove("static/outputimage/1.png")   
+    return "Clear successful"
 
 if __name__ == "__main__":
     app.run(debug=True,port=5001)

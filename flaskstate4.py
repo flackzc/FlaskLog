@@ -1120,8 +1120,8 @@ def state_log3():
         elif "get_closet_cell_run_time" in i and not ignore(i):
             writelog(log_list[1], "[INFO] 区域搜索时间 %sms" % log_list[7].split("=")[1])
         
-        # elif "CSlip::Run" in i and not ignore(i):
-        #     writelog(log_list[1], "[warning] 机器打滑了")
+        elif "CSlip::Run" in i and not ignore(i):
+            writelog(log_list[1], "[warning] 机器打滑了")
 
 
     fo.close()

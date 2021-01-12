@@ -25,6 +25,15 @@ resultfooter {
     /* position:absolute; */
 }
 
+drawfooter {
+    color: #888;
+    margin-top: 15px;
+    text-align: center;
+    padding: 10px;
+    /* bottom:0; */
+    /* position:absolute; */
+}
+
 /* 头像 */
 .avatar {
     width: 40px;
@@ -52,11 +61,11 @@ resultfooter {
 }
 
 
-.outputimage {
+/* .outputimage {
     display: block;
     margin: 0 auto;
-    height: 200px;    
-}
+    height: 1000px;    
+} */
 
 /* 龙猫图片 */
 .totoro {

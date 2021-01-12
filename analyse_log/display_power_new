@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+# _*_ coding:utf-8 _*_
+# 
+# Version: 0.0.1
+# Date:2020.02
+# Author: yjz
+#
+
+import matplotlib.pyplot as plt
+import numpy as np
+from datetime import datetime 
+import sys
+import os
+#from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+
+#print('Command has', len(sys.argv), 'arguments.')
+#print('Argument list is', str(sys.argv))
+
+if len(sys.argv) < 3:
+    print("sys.argv[0] file_name")
+    exit
+
+file_name = sys.argv[1]
+#print(file_name)
+cleantimes_file = sys.argv[2]
+size0 = os.path.getsize(sys.argv[2])
+cleantimes = []
+if size0 == 0:
+    cleantimes.append(-1)
+else:
+	with open(cleantimes_file,"r") as file:
+		line = file.readline().split()
+		cleantimes.append(int(line[0]))
+#print(cleantimes)
+#00:00:13.846387 TaskID 0 sendID 0 recvcount 350 walkstate 0 sideState 0 version 10541 McuADv 995 McuADa 34 battery 90
+#x,y = np.loadtxt(file_name, delimiter=' ', unpack=True, usecols=[6,14])
+timessort,TimeArray,battery = np.loadtxt(file_name, delimiter=' ', unpack=True, usecols=[0, 1, -1],dtype=bytes).astype(str)
+#recvcount,McuADv,McuADa,battery = np.loadtxt(file_name, delimiter=' ', unpack=True, usecols=[6, 14, 16, 18])
+#print(recvcount)
+#x=recvcount/50
+#ADv=McuADv/10
+#print(x)
+#print(y)
+X = [datetime.strptime(d, '%H:%M:%S.%f').strftime('%H:%M:%S.%f')  for d in TimeArray]
+Y = [int(i) for i in battery]
+data=[0]
+#print(len(timessort))
+for i in range(len(cleantimes)):
+	try:
+		nulluse = len(timessort)
+	except:
+		timessort=[timessort]	
+	for j in range(data[i],len(timessort)):
+		if  int(timessort[j]) > cleantimes[i]:
+			if j != 0 :
+				data.append(j)
+			break
+data.append(len(timessort))	
+data=list(sorted(set(data)))
+print(data)
+for i in range(len(data) - 1):	
+	x = X[data[i]:data[i+1]]
+	y = Y[data[i]:data[i+1]]
+	plt.figure(i,figsize=(20, 20))
+	#plt.axis("equal")
+	#plt.xlim(0, 1000)
+	plt.ylim(0, 100)
+	#plt.plot(x, McuADv, ',', label='power_adv', color='blue')
+	#plt.plot(x, McuADa, ',', label='power_ada', color='red')
+	plt.plot(x, y, ',', label='power_battery', color='green')
+
+	#plt.plot(x,McuADv,linewidth=0.5) #设置线条宽度
+	#plt.plot(x,McuADa,linewidth=0.5)
+	plt.plot(x,y,linewidth=0.5)
+
+	#plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文乱码问题
+	plt.xlabel('time')
+	plt.ylabel('power(%)')
+	plt.title('power_chart')
+	#plt.title('轨迹')
+	plt.legend()
+	plt.gcf().autofmt_xdate() 
+	plt.gcf().set_size_inches(20,20)
+	m = int(len(x)/60)
+	plt.xticks(list(x)[::m], x[::m],rotation=75)
+	plt.savefig("./output/power_%d"%(i) + ".png")
+plt.show()
+

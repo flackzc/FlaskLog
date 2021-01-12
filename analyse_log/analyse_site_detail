@@ -1,0 +1,179 @@
+#!/usr/bin/env python3
+# _*_ coding:utf-8 _*_
+#
+# Version: 0.0.1
+# Date:2020.02
+# Author: yjz
+#
+
+import matplotlib.pyplot as plt
+import numpy as np
+import sys
+#from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+#print('Command has', len(sys.argv), 'arguments.')
+#print('Argument list is', str(sys.argv))
+
+if len(sys.argv) < 3:
+    print("sys.argv[0] file_name view_mode view_switch")
+    exit
+
+file_name = './output/filter_detail.log'
+#print(file_name)
+
+
+
+file = open(file_name, 'r')
+site_file_ENavigationFoward = open('./output/tmpENavigationFoward.log', 'w')
+site_file_ETurnLeft = open('./output/tmpETurnLeft.log', 'w')
+site_file = open('./output/tmpEDefault.log', 'w')
+site_file_ECoverageFoward = open('./output/tmpECoverageFoward.log', 'w')
+site_file_ETurnRight = open('./output/tmpETurnRight.log', 'w')
+site_file_EForward = open('./output/tmpEForward.log', 'w')
+site_file_EForwardWall = open('./output/tmpEForwardWall.log', 'w')
+site_file_EStartChargePath = open('./output/tmpEStartChargePath.log', 'w')
+site_file_EGotoCharge = open('./output/tmpEGotoCharge.log', 'w')
+site_file_callback = open('./output/tmpcallback.log', 'w')
+site_file_EArroundBarrier = open('./output/tmpEArroundBarrier.log','w')
+read_all = False
+flag = ""
+def wrirelog():
+
+    if flag == "":
+        site_file.write(line_elements[1] + "," + line_elements[7] + line_elements[8] + line_elements[9] + "\n")
+
+    if flag == "ENavigationFoward":
+        if "ENavigationFoward" not in line_elements:
+            try:
+                line_elements[9]
+            except Exception as msg:
+                pass
+            else:
+            # print(flag,"---------------------------------------------------------------------------------------------------",line_elements)
+                site_file_ENavigationFoward.write(line_elements[1] + "," + line_elements[7] +line_elements[8] + line_elements[9] + "\n")
+    if flag == "EArroundBarrier":
+        if "EArroundBarrier" not in line_elements:
+            try:
+                line_elements[9]
+            except Exception as msg:
+                pass
+            else:
+            # print(flag,"---------------------------------------------------------------------------------------------------",line_elements)
+                site_file_EArroundBarrier.write(line_elements[1] + "," + line_elements[7] +line_elements[8] + line_elements[9] + "\n")
+
+    elif flag == "ETurnLeft":
+        if "ETurnLeft" not in line_elements:
+            try:
+                line_elements[9]
+            except Exception as msg:
+                pass
+            else:            
+            # print(flag,"---------------------------------------------------------------------------------------------------",line_elements)
+                site_file_ETurnLeft.write(line_elements[1] + "," + line_elements[7] + line_elements[8] + line_elements[9] + "\n")
+        
+    elif flag == "ECoverageFoward":
+        if "ECoverageFoward" not in line_elements:
+            try:
+                line_elements[9]
+            except Exception as msg:
+                pass
+            else:
+                site_file_ECoverageFoward.write(line_elements[1] + "," + line_elements[7] + line_elements[8] + line_elements[9] + "\n")
+
+    elif flag == "ETurnRight":
+        if "ETurnRight" not in line_elements:
+            try:
+                line_elements[9]
+            except Exception as msg:
+                pass
+            else:
+                site_file_ETurnRight.write(line_elements[1] + "," + line_elements[7] + line_elements[8] + line_elements[9] + "\n")
+
+    elif flag == "EForward":
+        if "EForward" not in line_elements:
+            if len(line_elements) > 9:
+                site_file_EForward.write(line_elements[1] + "," + line_elements[7] + line_elements[8] + line_elements[9] + "\n")
+
+    elif flag == "EForwardWall":
+        if "EForwardWall" not in line_elements:
+            if len(line_elements) > 9:
+                site_file_EForwardWall.write(line_elements[1] + "," + line_elements[7] + line_elements[8] + line_elements[9] + "\n")
+
+    elif flag == "EStartChargePath":
+        if "EStartChargePath" not in line_elements:
+            if len(line_elements) > 9:
+                site_file_EStartChargePath.write(line_elements[1] + "," + line_elements[7] + line_elements[8] + line_elements[9] + "\n")
+
+    elif flag == "EGotoCharge":
+        if "EGotoCharge" not in line_elements:
+            if len(line_elements) > 9:
+                site_file_EGotoCharge.write(line_elements[1] + "," + line_elements[7] + line_elements[8] + line_elements[9] + "\n")
+
+    elif flag == "":
+        if "SetTask" and "oOdoStart" and "callback" not in line_elements:
+            if len(line_elements) > 9:
+                site_file.write(line_elements[1] + "," + line_elements[7] +line_elements[8] + line_elements[9] + "\n")
+
+while not read_all:
+    line = file.readline()
+    if not line:
+        read_all = True
+        break
+    line_elements = line.split( )
+    if "ENavigationFoward" in line_elements:
+        flag = "ENavigationFoward"
+        # wrirelog()
+    elif "ETurnLeft" in line_elements:
+        flag = "ETurnLeft"
+        # wrirelog()
+    elif "ECoverageFoward" in line_elements:
+        flag = "ECoverageFoward"
+    
+    elif "ETurnRight" in line_elements:
+        flag = "ETurnRight"
+
+    elif "EForward" in line_elements:
+        flag = "EForward"
+
+    elif "EForwardWall" in line_elements:
+        flag = "EForwardWall"
+
+    elif "EStartChargePath" in line_elements:
+        flag = "EStartChargePath"
+
+    elif "EGotoCharge" in line_elements:
+        flag = "EGotoCharge"
+
+    elif "EArroundBarrier" in line_elements:
+        flag = "EArroundBarrier"
+#I0212 14:31:32.108222 4584] [COV] md_map::UpdatePose - BodyPose 25.119330, -3.804149, -54.131207 m_vecPath:14
+#I1027 07:05:55.030150 408] [MCU] SetTask - ENavigationFoward oOdoStart(-13027.342396,5314.767975) m_oEndOdo(-12900.000000,5150.000000) taskID=18634, nav_type=0, min_stop_dist=100, max_side_dist=208
+    # elif line_elements[7] == "callback" :
+    #     site_file_callback.write(line_elements[1] + "," + line_elements[9] + ","  + line_elements[10] + "\n")
+    # else:
+    #     # if len(line_elements) > 9:
+        
+    #     site_file.write(line_elements[1] + "," + line_elements[7] + line_elements[8] + line_elements[9] + "\n")
+    wrirelog()
+#    site_file.write(line_elements[0]  + line_elements[1] + line_elements[2]  + "\n")
+#    if line_elements[0] == "BodyPose":
+#        site_file.write(line_elements[1]  + line_elements[2] + line_elements[3]  + "\n")
+#        #print(line_elements)
+#    elif line_elements[0] == "LaserPose":
+#        site_file.write(line_elements[1]  + line_elements[2] + line_elements[3]  + "\n")
+#        #print(line_elements)
+
+
+file.close()
+site_file.close()
+site_file_ENavigationFoward.close()
+site_file_ETurnLeft.close()
+site_file_ECoverageFoward.close()
+site_file_ETurnRight.close()
+site_file_EForward.close()
+site_file_EForwardWall.close()
+site_file_EStartChargePath .close()
+site_file_EGotoCharge.close()
+site_file_callback.close()
+site_file_EArroundBarrier.close()

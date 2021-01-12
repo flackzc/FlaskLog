@@ -1,0 +1,565 @@
+#!/bin/bash
+# 
+# Version: 0.0.1
+# Date:2020.02
+# Author: yjz
+#
+
+echo "======================================================="
+echo "                analyse log start"
+echo "======================================================="
+
+usage(){
+	echo "------------------------------- function -------------------------------"
+	echo "$0 version                    - version"
+	echo "$0 all                        - all"
+	echo "$0 analyse_map                - analyse map"
+	echo "$0 power                      - power"
+	echo "$0 body_pose_2D               - body_pose_2D"
+	echo "$0 body_pose_3D               - body_pose_3D"
+	echo "$0 laser_pose_2D              - laser_pose_2D"
+	echo "$0 laser_pose_3D              - laser_pose_3D"
+	echo "$0 region_segmentation        - region_segmentation"
+	echo "$0 go_charge                  - go_charge"
+	echo "$0 find_string string         - find_string"
+	echo "$0 machine_state              - machine state"
+	echo "$0 message                    - message"
+	echo "$0 task_to_mcu                - set task to mcu"
+	echo "$0 relocation                 - relocation"
+	echo "$0 analyse_map_new             - analyse_map_new"
+	echo "$0 power_new                   - power_new"
+	echo "$0 body_pose_2D_new            - body_pose_2D_new"
+	echo "$0 body_pose_3D_new            - body_pose_3D_new"
+	echo "$0 region_segmentation_new     - region_segmentation_new"
+	echo "$0 cell_segmentation_new       - cell_segmentation _new"
+	echo "------------------------------------------------------------------------"
+}
+
+if [ ! -n "$1" ];then
+	usage
+	exit 1
+else
+	FUNC="$1"
+fi
+
+LOG_PATH=./log
+OUTPUT_PATH=./output
+
+if [ "`ls ${LOG_PATH}`" = "" ];then
+	echo "Analyse fail, log is empty, please input log!!!!!"
+	exit 1
+fi
+
+rm -rf ${OUTPUT_PATH}
+
+if [ ! -d ${OUTPUT_PATH} ];then
+	mkdir ${OUTPUT_PATH}/
+fi
+
+#LOG_NUM=`ls -l ${LOG_PATH} | grep "^-" |wc -l`
+#FILE_DATE=`ls ${LOG_PATH} | cut -d '.' -f 2`
+
+# 清扫开始标识 ClearCleanTask
+clean_task_judge () {
+	num=`grep "ClearCleanTask" -nr ${LOG_PATH} |  wc -l`
+	if [  ${num} -gt 1 ];then
+		echo "Clean task has many times"
+	fi
+
+	for line in `grep "ClearCleanTask" -nr ./log | cut -d ':' -f2`; do
+		echo ${line}
+	done
+}
+
+data_judge () {
+	LOG_NAME=$1
+	FUNC_NAME=$2
+#	cat ${LOG_NAME} | wc -l
+	test -s ${LOG_NAME}
+	if [ $? -eq 1 ];then
+		echo "${LOG_NAME} is empty"
+		echo "Analyse ${FUNC_NAME}, ignore it"
+		return 2
+	fi
+}
+
+#日期命名的文件， ls具有顺序性
+# para_filter () {
+# 	PARAMETER=$1
+# 	for file in `ls ${LOG_PATH}`; do
+# #		echo ${file}
+# 		grep "${PARAMETER}" ${LOG_PATH}/${file} >> ${OUTPUT_PATH}/filter_${PARAMETER}.log
+# 	done
+# }
+ENavigationFoward="SetTask - ENavigationFoward"
+ECoverageFoward="SetTask - ECoverageFoward"
+ETurnLeft="SetTask - ETurnLeft"
+ETurnRight="SetTask - ETurnRight"
+EForward="SetTask - EForward"
+EStartChargePath="SetTask - EStartChargePath"
+EForwardWall="SetTask - EForwardWall"
+EGotoCharge="SetTask - EGotoCharge"
+EArroundBarrier="SetTask - EArroundBarrier"
+
+para_filter () {
+        PARAMETER=$1
+        for file in `ls ${LOG_PATH}`; do
+            if [ $1 = "detail" ];then
+                grep -E "BodyPose|${EArroundBarrier}|${ENavigationFoward}|${ECoverageFoward}|${ETurnLeft}|${ETurnRight}|${EForward}|${EStartChargePath}|${EForwardWall}|${EGotoCharge}"  ${LOG_PATH}/${file} >> ${OUTPUT_PATH}/filter_${PARAMETER}.log
+              	# echo ${file}
+            else
+			
+                grep "${PARAMETER}" ${LOG_PATH}/${file} >> ${OUTPUT_PATH}/filter_${PARAMETER}.log
+            fi
+        done
+}
+
+
+file_judge () {
+	PARAMETER=$1
+	if [ ! -f ${OUTPUT_PATH}/filter_${PARAMETER}.log ];then
+		para_filter ${PARAMETER}
+	else
+		echo "${PARAMETER}.log is exist"
+	fi
+}
+
+#清扫规划详情
+detail () {
+    file_judge detail
+    data_judge ${OUTPUT_PATH}/filter_detail.log detail
+    ./analyse_site_detail
+    cp ${OUTPUT_PATH}/tmpENavigationFoward.log ${OUTPUT_PATH}/ENavigationFoward.log
+    cp ${OUTPUT_PATH}/tmpECoverageFoward.log ${OUTPUT_PATH}/ECoverageFoward.log
+    cp ${OUTPUT_PATH}/tmpETurnRight.log ${OUTPUT_PATH}/ETurnRight.log
+    cp ${OUTPUT_PATH}/tmpETurnLeft.log ${OUTPUT_PATH}/ETurnLeft.log
+    cp ${OUTPUT_PATH}/tmpEForward.log ${OUTPUT_PATH}/EForward.log
+    cp ${OUTPUT_PATH}/tmpEForwardWall.log ${OUTPUT_PATH}/EForwardWall.log
+    cp ${OUTPUT_PATH}/tmpEStartChargePath.log ${OUTPUT_PATH}/EStartChargePath.log
+    cp ${OUTPUT_PATH}/tmpEGotoCharge.log ${OUTPUT_PATH}/EGotoCharge.log
+	cp ${OUTPUT_PATH}/tmpEArroundBarrier.log ${OUTPUT_PATH}/EArroundBarrier.log
+	cp ${OUTPUT_PATH}/tmpEDefault.log ${OUTPUT_PATH}/EDefault.log
+	echo "Analyse body pose detail, it is ok"
+}
+
+# 位姿
+body_pose () {
+	file_judge BodyPose
+	data_judge ${OUTPUT_PATH}/filter_BodyPose.log body_pose
+	# return_value=$?
+	# if [ ${return_value} -eq 2 ];then
+	# 	return 3
+	# fi
+
+#	while read line
+#	do
+##		echo $line
+#		echo ${line#*BodyPose} >> ${OUTPUT_PATH}/cut.log
+#	done < ${OUTPUT_PATH}/filter_BodyPose.log
+#	data_judge ${OUTPUT_PATH}/cut.log body_pose
+
+	./analyse_site ${OUTPUT_PATH}/filter_BodyPose.log $1 $2
+#	./analyse_site ${OUTPUT_PATH}/BodyPose.log 2D open
+#	./analyse_site ${OUTPUT_PATH}/BodyPose.log 3D open
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/BodyPose.log
+	echo "Analyse body pose, it is ok"
+}
+
+UpdateOdomPose () {
+	file_judge UpdateOdomPose
+	data_judge ${OUTPUT_PATH}/filter_UpdateOdomPose.log UpdateOdomPose
+
+	# return_value=$?
+	# if [ ${return_value} -eq 2 ];then
+	# 	return 3
+	# fi
+	./analyse_site ${OUTPUT_PATH}/filter_UpdateOdomPose.log $1 $2
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/UpdateOdomPose.log
+	echo "Analyse UpdateOdomPose, it is ok"
+}
+
+callback() {
+	file_judge callback
+	data_judge ${OUTPUT_PATH}/filter_callback.log callback
+
+	#return_value=$?
+	#if [ ${return_value} -eq 2 ];then
+	#	return 3
+	#fi
+	./analyse_site ${OUTPUT_PATH}/filter_callback.log $1 $2
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/callback.log
+	echo "Analyse LaserSlamPosCallback, it is ok"
+}
+
+wavesensor() {
+	file_judge wavesensor
+ 	data_judge ${OUTPUT_PATH}/filter_wavesensor.log wavesensor
+	#return_value=$?
+	#if [ ${return_value} -eq 2 ];then
+	#	return 3
+	#fi
+	./analyse_site ${OUTPUT_PATH}/filter_wavesensor.log $1 $2
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/wavesensor.log
+	echo "Analyse WaveSensor recv from mcu, it is ok"
+}
+
+battery() {
+	file_judge recvcount
+ 	data_judge ${OUTPUT_PATH}/filter_recvcount.log recvcount
+	#return_value=$?
+	#if [ ${return_value} -eq 2 ];then
+	#	return 3
+	#fi
+	./analyse_site ${OUTPUT_PATH}/filter_recvcount.log $1 $2
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/recvcount.log
+	echo "Analyse battery recv from mcu, it is ok"
+}
+
+laser_pose () {
+	file_judge LaserPose
+	data_judge ${OUTPUT_PATH}/filter_LaserPose.log laser_pose
+	return_value=$?
+	if [ ${return_value} -eq 2 ];then
+		return 3
+	fi
+
+#	while read line
+#	do
+#		echo $line
+#		echo ${line#*LaserPose} >> ${OUTPUT_PATH}/cut.log
+#	done < ${OUTPUT_PATH}/filter_LaserPose.log
+#	data_judge ${OUTPUT_PATH}/cut.log laser_pose
+
+	./analyse_site ${OUTPUT_PATH}/filter_LaserPose.log $1 $2
+	#./analyse_site ${OUTPUT_PATH}/LaserPose.log 2D open
+	#./analyse_site ${OUTPUT_PATH}/LaserPose.log 3D open
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/LaserPose.log
+#	rm -f ${OUTPUT_PATH}/cut.log
+	echo "Analyse laser pose, it is ok"
+}
+
+
+# 区域分割
+region_segmentation () {
+	file_judge "CMotionPlanTask::StartCoverage"
+	data_judge ${OUTPUT_PATH}/filter_CMotionPlanTask::StartCoverage.log region_segmentation
+
+	grep "CMotionPlanTask::StartCoverage - (" ${OUTPUT_PATH}/filter_CMotionPlanTask::StartCoverage.log | cut -d '(' -f2|cut -d ')' -f1 > ${OUTPUT_PATH}/tmp.log
+	if [ $1 == open ];then
+		./start_coverage ${OUTPUT_PATH}/tmp.log
+	fi
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/region_segmentation.log
+	echo "Analyse region segmentation, it is ok"
+}
+
+# 子区域分割
+cell_segmentation () {
+	file_judge "CCoveragePlanning::_gotoUncovArea"
+	data_judge ${OUTPUT_PATH}/filter_CCoveragePlanning::_gotoUncovArea.log cell_segmentation
+
+	grep "CCoveragePlanning::_gotoUncovArea - find uncovered area (" \
+	     ${OUTPUT_PATH}/filter_CCoveragePlanning::_gotoUncovArea.log | cut -d '(' -f2|cut -d ')' -f1 > ${OUTPUT_PATH}/tmp.log
+	if [ $1 == open ];then
+		./start_coverage ${OUTPUT_PATH}/tmp.log
+	fi
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/cell_segmentation.log
+	echo "Analyse cell segmentation, it is ok"
+}
+
+# 回充
+go_charge () {
+	PARAMETER=go_charge
+	if [ ! -f ${OUTPUT_PATH}/${PARAMETER}.log ];then
+		grep "ECleanStatusDone" -nr ${LOG_PATH}/ > ${OUTPUT_PATH}/${PARAMETER}.log	#清扫完成了回充
+		grep "MSG_LOWPOWER" -nr ${LOG_PATH}/ >> ${OUTPUT_PATH}/${PARAMETER}.log		#低电量回充
+		grep "MSG_KEY_GOTOCHARGE" -nr ${LOG_PATH}/ >> ${OUTPUT_PATH}/${PARAMETER}.log	#按键回充
+		grep "EStartChargePath" -nr ${LOG_PATH}/ >> ${OUTPUT_PATH}/${PARAMETER}.log		#开始回充命令
+	else
+		echo "${PARAMETER}.log is exist"
+	fi
+	echo "Analyse, go charge, it is ok"
+}
+
+# 查找字符串
+find_string () {
+	string=$1
+	echo ${string}
+	grep "${string}" -nr ${LOG_PATH}/ > ${OUTPUT_PATH}/find_string.log
+	echo "Analyse, find string, it is ok"
+}
+
+# 机器状态
+machine_state () {
+	file_judge SetNextMachineState
+	data_judge ${OUTPUT_PATH}/filter_SetNextMachineState.log machine_state
+	return_value=$?
+	if [ ${return_value} -eq 2 ];then
+		return 3
+	fi
+	./analyse_keyword ${OUTPUT_PATH}/filter_SetNextMachineState.log
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/machine_state.log
+	echo "Analyse machine state, it is ok"
+}
+
+# 查找关键词
+find_keyword () {
+	FUNC=$1
+	keyword=$2
+	file_judge ${keyword}
+	data_judge ${OUTPUT_PATH}/filter_${keyword}.log ${keyword}
+	return_value=$?
+	if [ ${return_value} -eq 2 ];then
+		return 3
+	fi
+	./analyse_keyword ${OUTPUT_PATH}/filter_${keyword}.log
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/${FUNC}.log
+	echo "Analyse ${FUNC}, it is ok"
+}
+
+# 位姿，区域分割同时显示在一张图中，并可以移动鼠标来打印坐标
+analyse_map () {
+	body_pose 2D close
+	UpdateOdomPose 2D close
+	region_segmentation close
+	cell_segmentation close
+	callback 2D close
+	wavesensor 2D close
+	battery 2D close
+	detail
+	./analyse_map ${OUTPUT_PATH}/region_segmentation.log ${OUTPUT_PATH}/cell_segmentation.log \
+		${OUTPUT_PATH}/BodyPose.log ${OUTPUT_PATH}/UpdateOdomPose.log ${OUTPUT_PATH}/callback.log ${OUTPUT_PATH}/wavesensor.log ${OUTPUT_PATH}/recvcount.log
+	echo "Analyse map, it is ok"
+}
+
+# 重定位
+relocation () {
+	grep "m_nStartSlamType == NEED_RELOCATION" -nr ${LOG_PATH} >  ${OUTPUT_PATH}/relocation.log
+}
+
+power () {
+	find_keyword power McuADv
+	grep -rl ',' output/power.log | xargs sed -i 's/,/ /g'
+	grep -rl '=' output/power.log | xargs sed -i 's/=/ /g'
+	./display_power output/power.log
+}
+
+memory () {
+	find_keyword power McuADv
+#	./display_memory output/memory.log
+}
+
+
+
+para_filter_new () {
+	PARAMETER=$1
+	for file in `ls ${LOG_PATH}`; do
+#		echo ${file}
+		cat ${LOG_PATH}/${file}  >> ${OUTPUT_PATH}/filter_tmp0.log
+	done
+	#!/bin/sh
+	sed -n '=' ${OUTPUT_PATH}/filter_tmp0.log > tmp
+	paste -d' ' ${OUTPUT_PATH}/filter_tmp0.log tmp > ${OUTPUT_PATH}/filter_tmp1.log
+	grep "${PARAMETER}" ${OUTPUT_PATH}/filter_tmp1.log >> ${OUTPUT_PATH}/filter_${PARAMETER}.log
+	rm -f tmp
+	rm -f ${OUTPUT_PATH}/filter_tmp0.log
+	rm -f ${OUTPUT_PATH}/filter_tmp1.log
+}
+
+file_judge_new () {
+	PARAMETER=$1
+	if [ ! -f ${OUTPUT_PATH}/filter_${PARAMETER}.log ];then
+		para_filter_new ${PARAMETER}
+	else
+		echo "${PARAMETER}.log is exist"
+	fi
+}
+
+
+# 查找关键词
+find_keyword_new () {
+	FUNC=$1
+	keyword=$2
+	file_judge_new ${keyword}
+	data_judge ${OUTPUT_PATH}/filter_${keyword}.log ${keyword}
+	return_value=$?
+	./analyse_keyword_new ${OUTPUT_PATH}/filter_${keyword}.log
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/${FUNC}.log
+	echo "Analyse ${FUNC}, it is ok"
+}
+
+body_pose_new () {
+	find_keyword_new MachineInit_S MachineInit_S
+	file_judge_new BodyPose
+	data_judge ${OUTPUT_PATH}/filter_BodyPose.log body_pose
+	return_value=$?
+	if [ ${return_value} -eq 2 ];then
+		return 3
+	fi
+	./analyse_site_new ${OUTPUT_PATH}/filter_BodyPose.log $1 $2 ${OUTPUT_PATH}/MachineInit_S.log
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/BodyPose.log
+	echo "Analyse body pose, it is ok"
+}
+
+laser_pose_new () {
+	find_keyword MachineInit_S MachineInit_S
+	file_judge LaserPose
+	data_judge ${OUTPUT_PATH}/filter_LaserPose.log laser_pose
+	return_value=$?
+	if [ ${return_value} -eq 2 ];then
+		return 3
+	fi
+	./analyse_site_new ${OUTPUT_PATH}/filter_LaserPose.log $1 $2 ${OUTPUT_PATH}/MachineInit_S.log
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/LaserPose.log
+	echo "Analyse laser pose, it is ok"
+}
+
+
+# 区域分割
+region_segmentation_new () {
+	if [ $1 == open ];then
+		find_keyword_new MachineInit_S MachineInit_S
+	fi
+	
+	file_judge_new "CMotionPlanTask::StartCoverage"
+	data_judge ${OUTPUT_PATH}/filter_CMotionPlanTask::StartCoverage.log region_segmentation
+	grep "CMotionPlanTask::StartCoverage - (" \
+		 ${OUTPUT_PATH}/filter_CMotionPlanTask::StartCoverage.log | cut -d '(' -f2|cut -d ')' -f1 > ${OUTPUT_PATH}/tmp1.log
+	grep "CMotionPlanTask::StartCoverage - (" \
+		 ${OUTPUT_PATH}/filter_CMotionPlanTask::StartCoverage.log | cut -d ' ' -f12  > ${OUTPUT_PATH}/tmp2.log
+	paste -d,  ${OUTPUT_PATH}/tmp1.log ${OUTPUT_PATH}/tmp2.log > ${OUTPUT_PATH}/tmp.log
+	rm -rf ${OUTPUT_PATH}/tmp1.log
+	rm -rf ${OUTPUT_PATH}/tmp2.log
+	if [ $1 == open ];then
+		./start_coverage_new ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/MachineInit_S.log
+	fi 
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/region_segmentation.log
+	echo "Analyse region segmentation, it is ok"
+}
+
+# 子区域分割
+cell_segmentation_new () {
+	if [ $1 == open ];then
+		find_keyword_new MachineInit_S MachineInit_S
+	fi
+	
+	file_judge_new "CCoveragePlanning::_gotoUncovArea"
+	data_judge ${OUTPUT_PATH}/filter_CCoveragePlanning::_gotoUncovArea.log cell_segmentation
+
+	grep "CCoveragePlanning::_gotoUncovArea - find uncovered area (" \
+	     ${OUTPUT_PATH}/filter_CCoveragePlanning::_gotoUncovArea.log | cut -d '(' -f2|cut -d ')' -f1 > ${OUTPUT_PATH}/tmp1.log
+	grep "CCoveragePlanning::_gotoUncovArea - find uncovered area (" \
+		 ${OUTPUT_PATH}/filter_CCoveragePlanning::_gotoUncovArea.log | cut -d ' ' -f 15  > ${OUTPUT_PATH}/tmp2.log
+	paste -d, ${OUTPUT_PATH}/tmp1.log ${OUTPUT_PATH}/tmp2.log > ${OUTPUT_PATH}/tmp.log
+	rm -rf ${OUTPUT_PATH}/tmp1.log
+	rm -rf ${OUTPUT_PATH}/tmp2.log
+	
+	if [ $1 == open ];then
+		./start_coverage_new ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/MachineInit_S.log
+	fi
+	mv ${OUTPUT_PATH}/tmp.log ${OUTPUT_PATH}/cell_segmentation.log
+	echo "Analyse cell segmentation, it is ok"
+}
+
+
+
+# 位姿，区域分割同时显示在一张图中，并可以移动鼠标来打印坐标
+analyse_map_new () {
+	find_keyword_new MachineInit_S MachineInit_S
+	body_pose_new 2D close
+	region_segmentation_new close
+	cell_segmentation_new close
+	./analyse_map_new ${OUTPUT_PATH}/region_segmentation.log \
+		 ${OUTPUT_PATH}/cell_segmentation.log ${OUTPUT_PATH}/BodyPose.log ${OUTPUT_PATH}/MachineInit_S.log
+	echo "Analyse map, it is ok"
+}
+
+power_new () {
+	find_keyword_new MachineInit_S MachineInit_S
+	find_keyword_new power McuADv
+	grep -rl ',' output/power.log | xargs sed -i 's/,/ /g'
+	grep -rl '=' output/power.log | xargs sed -i 's/=/ /g'
+	./display_power_new output/power.log output/MachineInit_S.log
+}
+
+
+all () {
+	body_pose 2D open
+#	body_pose 3D open
+#	laser_pose 2D open
+#	laser_pose 3D open
+	region_segmentation open
+	cell_segmentation open
+	go_charge
+	find_keyword machine_state SetNextMachineState
+	find_keyword message SetMessage
+	find_keyword task_to_mcu SetTask
+	find_keyword power McuADv
+	find_keyword memory rss
+	relocation	
+}
+
+analyse_log_end () {
+	echo "If they have problem, please see output/error.log."
+	echo "======================================================="
+	echo "                analyse log end"
+	echo "======================================================="
+}
+
+if [ ${FUNC} == version ];then
+	echo "version: 0.0.1"
+elif [ ${FUNC} == all ];then
+	all
+elif [ ${FUNC} == body_pose_2D ];then
+	body_pose 2D open
+elif [ ${FUNC} == body_pose_3D ];then
+	body_pose 3D open
+elif [ ${FUNC} == laser_pose_2D ];then
+	laser_pose 2D open
+elif [ ${FUNC} == body_pose_3D ];then
+	laser_pose 3D open
+elif [ ${FUNC} == region_segmentation ];then
+	region_segmentation open
+elif [ ${FUNC} == cell_segmentation ];then
+	cell_segmentation open
+elif [ ${FUNC} == go_charge ];then
+	go_charge
+elif [ ${FUNC} == find_string ];then
+	find_string $2
+elif [ ${FUNC} == machine_state ];then
+	find_keyword ${FUNC} SetNextMachineState
+elif [ ${FUNC} == message ];then
+	find_keyword ${FUNC} SetMessage
+elif [ ${FUNC} == task_to_mcu ];then
+	find_keyword ${FUNC} SetTask
+elif [ ${FUNC} == power ];then
+	power
+elif [ ${FUNC} == analyse_map ];then
+	analyse_map
+elif [ ${FUNC} == relocation ];then
+	relocation
+elif [ ${FUNC} == memory ];then
+	find_keyword ${FUNC} rss	
+elif [ ${FUNC} == analyse_map_new ];then
+	analyse_map_new	
+elif [ ${FUNC} == power_new ];then
+	power_new 	
+elif [ ${FUNC} == body_pose_2D_new ];then
+	body_pose_new 2D open
+elif [ ${FUNC} == body_pose_3D_new ];then
+	body_pose_new 3D open	
+elif [ ${FUNC} == region_segmentation_new ];then		
+	region_segmentation_new open	
+elif [ ${FUNC} == cell_segmentation_new ];then		
+	cell_segmentation_new open	
+	
+else
+	echo "Invalid parameter"
+	usage
+	analyse_log_end
+	exit 1
+fi
+
+analyse_log_end
+exit 0
+
+
