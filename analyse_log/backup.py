@@ -2,10 +2,10 @@
 # line1=line.split()
 # print(line1[7].replace("=",","))
 # import requests
-url="https://test-mx-cnca.midea.com/feedback/v1/web/feedback/log/download/oss?logName=20201226_131639_000_0900000002A9_complete_clean.tar.gz&sn=0000B831175000461090341Z0042Q0V2"
+url="https://******/feedback/v1/web/feedback/log/download/oss?logName=20201226_131639_000_0900000002A9_complete_clean.tar.gz&sn=0000B831175000461090341Z0042Q0V2"
 import requests 
 
-r = requests.get(url,auth = ("Midea","Midea123$$")) 
+r = requests.get(url,auth = ("Midea","******$$")) 
 print(r)
 with open("demo3.tgz", "wb") as code:
    code.write(r.content)
