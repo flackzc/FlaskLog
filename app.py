@@ -8,13 +8,15 @@ import flaskstate4, test
 from flask import redirect, url_for, request
 
 
-app = Flask(__name__)
 name = 'zc'
+app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////' + os.path.join(app.root_path, 'data.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-logBasePath = '/media/sf_p-workspace/M7log/'
+logBasePath = '/media/sf_p-workspace/M7log/' #服务器日志目录
 outPutPath = os.getcwd()
 resultPath = outPutPath + "/result.log"
+
+#读取日志服务器目录
 logList = []
 log = os.listdir(logBasePath)
 for line in log:
@@ -23,19 +25,21 @@ for line in log:
         logList.append(line)
     logList.reverse()
 
+#init方法，点击按钮是调用该方法删除缓存文件
 def xremove(removcelogname):
     try:
         os.remove(removcelogname)
     except FileNotFoundError as e:
         pass
 
+#主页显示，读取index.html并显示
 @app.route('/')
 def index():
     xremove(resultPath)
     xremove("temp.log")
-
     return render_template('index.html', name=name, log=logList)
 
+#点击主页reduce按钮，判断输入框内容后传参给分析脚本，跳转到result.html显示分析内容
 @app.route("/analyse", methods=['POST', 'GET']) 
 def analyse(): 
     xremove(resultPath)
@@ -57,6 +61,7 @@ def analyse():
         xremove(flaskstate4.logPath + "temp.log")
         return render_template('result.html', name=name, logname= inputLogName, result=result)
 
+#点击主页draw按钮，判断输入框内容后传参给分析脚本，跳转到draw.html显示分析内容
 @app.route("/draw", methods=['POST', 'GET'])
 def draw():
     inputLogName2 = request.form.get('fname2').strip(' ')   
@@ -74,13 +79,15 @@ def draw():
         mv *.png ../static/outputimage/")
         return render_template('draw.html', name=name)
 
+#点击主页clear按钮，调用xremote方法删除缓存文件
 @app.route("/delete", methods=['POST', 'GET'])
 def delete():
     for png in os.listdir("static/outputimage/"):
         xremove("static/outputimage/"+png)
     for logfile in os.listdir("analyse_log/log"):
         xremove("analyse_log/log/"+logfile)   
+    xremove("temp.log")
     return render_template('index.html', name=name, log=logList)
 
 if __name__ == "__main__":
-    app.run(debug=True,port=5001)
+    app.run(host='0.0.0.0', debug=True, port=5001)
