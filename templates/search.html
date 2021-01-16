@@ -34,13 +34,13 @@
     </form>
 
     {# 使用 length 过滤器获取 movies 变量的长度 #}
-    <p>{{ log|length }} Titles</p>
+    <p>{{ result|length }} Titles</p>
 
     <!-- position:absolute;  --> 
     <div style="height:450px; width:600px; overflow:auto">
 
     <ul class="movie-list">
-        {% for eachlog in log %}  {# 迭代 movies 变量 #}
+        {% for eachlog in result %}  {# 迭代 movies 变量 #}
         <li>{{ eachlog }}     
             <!-- <form action="/reduceeach" method="post">
                 <button name="submit4" type="submit">reduceeach</button>

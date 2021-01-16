@@ -17,7 +17,15 @@
     </h2>
 
     {# 使用 length 过滤器获取 result 变量的长度 #}
-    <p>{{ result|length }} 行日志分析 {{ logname }}</p>
+    <p>{{ result|length }} 行日志分析 {{ logname }}
+        <form action="/analyse/searchloginfo" method="post">
+            <p>
+                <input type="text" name="fname4" maxlength="10000" style="width:400px" placeholder="请输入搜索内容">
+                <button name="submit2" type="submit"> searchinfo </button>
+            </p>
+        </form>
+
+    </p>
 
     <ul class="movie-list">
         {% for eachlog in result %}  {# 迭代 movies 变量 #}

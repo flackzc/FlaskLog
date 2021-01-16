@@ -80,9 +80,33 @@ def analyse():
         flaskstate4.state_log3()
         fo = open(resultPath, 'r')
         result = fo.readlines()
-        xremove(resultPath)
+        # xremove(resultPath)
         xremove(flaskstate4.logPath + "temp.log")
         return render_template('result.html', name=name, logname= inputLogName, result=result)
+
+@app.route("/analyse/searchloginfo", methods=['POST', 'GET']) 
+def searchloginfo(): 
+    # xremove(resultPath)
+    # xremove("temp.log")
+    resultList = []
+    searchLogName = request.form.get('fname4').strip(' ')
+    if not searchLogName:
+        return "input empty"
+    # elif not os.path.exists(logBasePath + inputLogName):
+    #     return "log file not exist"
+    # elif inputLogName == "." or inputLogName == "..":
+    #     return "log file not exist"
+    else:
+        # print(logBasePath + inputLogName)
+        # flaskstate4.merge_log(logBasePath + searchLogName, "temp.log")
+        # flaskstate4.state_log3()
+        fo = open(resultPath, 'r')
+        for line in fo.readlines():
+            if searchLogName.lower() in line.lower():
+                resultList.append(line)
+        # xremove(resultPath)
+        xremove(flaskstate4.logPath + "temp.log")
+        return render_template('search.html', name=name, logname= searchLogName, result=resultList)
 
 #点击主页draw按钮，判断输入框内容后传参给分析脚本，跳转到draw.html显示分析内容
 @app.route("/draw", methods=['POST', 'GET'])
