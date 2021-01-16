@@ -1,6 +1,8 @@
-I0113 07:26:21.439299 15650] [COV] CMotionPlanTask::StartCoverage - (-4546, -4305, 654, 895) first=1
-I0113 07:26:22.180101 15650] [COV] CMotionPlanTask::StartCoverage - start coverage
-I0113 08:18:51.347543 15650] [COV] CMotionPlanTask::StartCoverage - (-3228, -3450, 1972, 1750) first=1
-I0113 08:18:52.462234 15650] [COV] CMotionPlanTask::StartCoverage - start coverage
-I0113 08:54:56.326490 15650] [COV] CMotionPlanTask::StartCoverage - (-3228, -3450, 1972, 1750) first=0
-I0113 08:54:57.033583 15650] [COV] CMotionPlanTask::StartCoverage - start coverage
+I0106 11:47:38.175683 537] [COV] CMotionPlanTask::StartCoverage - (-4219, 367, 981, 5567) first=1
+I0106 11:47:38.827646 537] [COV] CMotionPlanTask::StartCoverage - start coverage
+I0106 14:34:31.031716 537] [COV] CMotionPlanTask::StartCoverage - (-4165, -4912, 1035, 288) first=1
+I0106 14:34:31.697630 537] [COV] CMotionPlanTask::StartCoverage - start coverage
+I0106 14:41:09.755571 537] [COV] CMotionPlanTask::StartCoverage - (-4165, 288, 1035, 5488) first=1
+I0106 14:41:10.680670 537] [COV] CMotionPlanTask::StartCoverage - start coverage
+I0106 14:54:57.823673 537] [COV] CMotionPlanTask::StartCoverage - (-359, -311, 4841, 4889) first=1
+I0106 14:54:58.485888 537] [COV] CMotionPlanTask::StartCoverage - start coverage

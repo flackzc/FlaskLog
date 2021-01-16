@@ -23,7 +23,7 @@ for line in log:
     print(line)
     if os.path.isdir(logBasePath + line) and line.startswith("202") and not line.endswith(")"):
         logList.append(line)
-    logList.reverse()
+    # logList.reverse()
 
 #init方法，点击按钮是调用该方法删除缓存文件
 def xremove(removcelogname):
@@ -35,9 +35,32 @@ def xremove(removcelogname):
 #主页显示，读取index.html并显示
 @app.route('/')
 def index():
+    logList = []
+    log = os.listdir(logBasePath)
+    for line in log:
+        print(line)
+        if os.path.isdir(logBasePath + line) and line.startswith("202") and not line.endswith(")"):
+            logList.append(line)
+        logList.reverse()
+
     xremove(resultPath)
     xremove("temp.log")
     return render_template('index.html', name=name, log=logList)
+
+@app.route('/search', methods=['POST', 'GET'])
+def search():
+    searchList = []
+    searchLogName = request.form.get('fname3').strip(' ')
+    log = os.listdir(logBasePath)
+    for line in log:
+        print(line)
+        if os.path.isdir(logBasePath + line) and line.startswith("202") and not line.endswith(")") and searchLogName in line:
+            searchList.append(line)
+        searchList.reverse()
+
+    xremove(resultPath)
+    xremove("temp.log")
+    return render_template('search.html', name=name, log=searchList)
 
 #点击主页reduce按钮，判断输入框内容后传参给分析脚本，跳转到result.html显示分析内容
 @app.route("/analyse", methods=['POST', 'GET']) 
@@ -77,6 +100,7 @@ def draw():
         os.system("cd analyse_log; \
         ./analyse_log analyse_map; \
         mv *.png ../static/outputimage/")
+
         return render_template('draw.html', name=name)
 
 #点击主页clear按钮，调用xremote方法删除缓存文件

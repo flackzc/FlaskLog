@@ -1,72 +1,88 @@
-I0113 07:26:22.179535 15650] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4450, -1300, 650, -150), type=0
-I0113 07:26:22.179558 15650] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:18:52.461342 15650] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (1300, -500, 1500, -350), type=0
-I0113 08:18:52.461364 15650] [COV] CCoveragePlanning::_gotoUncovArea - coverage vertical
-I0113 08:18:56.070489 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (1300, -500, 1500, -350), type=0
-I0113 08:18:56.070509 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage vertical
-I0113 08:18:57.135251 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (1200, -300, 1950, -200), type=0
-I0113 08:18:57.135509 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:20:09.575743 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-2800, -1500, -1250, 550), type=0
-I0113 08:20:09.575762 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:20:49.332195 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-2700, 850, -1300, 1100), type=0
-I0113 08:20:49.332280 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:21:19.241612 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-2300, 850, -1300, 1100), type=0
-I0113 08:21:19.241631 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:21:38.238396 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-2300, 1100, -1300, 1100), type=0
-I0113 08:21:38.238412 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:22:32.323369 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (50, 800, 1950, 1750), type=0
-I0113 08:22:32.323504 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:22:42.969563 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (50, 800, 1950, 1600), type=0
-I0113 08:22:42.969651 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:23:21.487082 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (50, 800, 1950, 1350), type=0
-I0113 08:23:21.487097 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:23:46.309720 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (50, 800, 1950, 1350), type=0
-I0113 08:23:46.309736 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:24:17.808569 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (50, 800, 1950, 1100), type=0
-I0113 08:24:17.808589 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:24:34.964747 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (200, 1000, 1100, 1000), type=0
-I0113 08:24:34.964763 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:25:12.901633 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-650, -50, 1950, 150), type=0
-I0113 08:25:12.901657 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:25:52.037809 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-650, -50, 1950, 0), type=0
-I0113 08:25:52.037921 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:26:05.544561 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-850, -1500, 1300, -250), type=0
-I0113 08:26:05.544579 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:26:20.960361 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-850, -1500, 1300, -400), type=0
-I0113 08:26:20.960376 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:27:26.437953 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (150, -1150, 900, -850), type=0
-I0113 08:27:26.438061 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:27:30.403659 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (150, -1150, 900, -850), type=0
-I0113 08:27:30.403676 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:27:31.321210 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (150, -1150, 900, -850), type=0
-I0113 08:27:31.321226 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:27:33.737017 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (150, -1150, 900, -850), type=0
-I0113 08:27:33.737033 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:27:34.594941 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (150, -1150, 900, -850), type=0
-I0113 08:27:34.594960 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:27:38.317898 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (150, -1150, 900, -850), type=0
-I0113 08:27:38.317914 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:27:39.200878 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (150, -1150, 900, -1000), type=0
-I0113 08:27:39.200893 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:28:00.287189 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-2350, -1550, 1350, -1550), type=0
-I0113 08:28:00.287206 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:29:12.770251 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-850, -1050, -250, -700), type=0
-I0113 08:29:12.770269 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:29:41.340181 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-150, -1550, 1350, -1250), type=0
-I0113 08:29:41.340261 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:30:17.485469 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (1250, -1850, 1900, -1350), type=0
-I0113 08:30:17.485488 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:30:45.366870 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-250, -3300, 1850, -1900), type=0
-I0113 08:30:45.366886 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:31:33.155124 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (0, -1850, 900, -1450), type=0
-I0113 08:31:33.155140 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:32:11.777243 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-100, -2750, 800, -2200), type=0
-I0113 08:32:11.777259 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:32:26.060322 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-100, -2750, 800, -2350), type=0
-I0113 08:32:26.060406 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:33:31.364814 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-250, -3300, 700, -3200), type=0
-I0113 08:33:31.364830 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:34:01.805604 15611] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-2500, -3250, -950, -2050), type=0
-I0113 08:34:01.805620 15611] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
-I0113 08:54:57.033059 15650] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-1400, -3100, -1050, -2900), type=0
-I0113 08:54:57.033077 15650] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 11:43:10.615265 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-13100, -1500, -9400, -1400), type=0
+I0106 11:43:10.615283 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 11:43:25.168912 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-10000, -400, -9400, -150), type=0
+I0106 11:43:25.168928 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 11:43:52.716570 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-10000, -400, -9400, -350), type=0
+I0106 11:43:52.716588 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 11:44:31.425304 424] [COV] CCoveragePlanning::_gotoUncovArea - no uncovered area found cell_cnt=4, path_retry=4
+I0106 11:47:38.827116 537] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-3500, 450, -2400, 450), type=0
+I0106 11:47:38.827132 537] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 11:48:05.771760 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4000, 450, -3600, 550), type=0
+I0106 11:48:05.771775 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 11:48:36.359668 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4150, 650, -3350, 3700), type=0
+I0106 11:48:36.359683 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 11:48:47.189656 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4150, 650, -3350, 3700), type=0
+I0106 11:48:47.189671 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 11:48:54.196044 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4000, 650, -3350, 700), type=0
+I0106 11:48:54.196059 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 11:49:00.059103 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4150, 850, -3700, 3700), type=0
+I0106 11:49:00.059119 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 11:49:19.674999 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4150, 850, -3700, 3700), type=0
+I0106 11:49:19.675110 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 11:49:29.299007 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4150, 1050, -3700, 3700), type=0
+I0106 11:49:29.299023 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 11:50:03.227298 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4150, 1750, -3700, 3700), type=0
+I0106 11:50:03.227314 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 11:50:27.906381 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4150, 1950, -3700, 3700), type=0
+I0106 11:50:27.906399 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 11:51:34.333223 424] [COV] CCoveragePlanning::_gotoUncovArea - no uncovered area found cell_cnt=0, path_retry=0
+I0106 14:34:31.697057 537] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-3900, -650, 650, -50), type=0
+I0106 14:34:31.697074 537] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:35:11.772459 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4050, 150, -1950, 250), type=0
+I0106 14:35:11.772485 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:35:36.533578 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-3950, 250, -2700, 250), type=0
+I0106 14:35:36.533594 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:35:51.472018 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-3800, -150, -2850, -150), type=0
+I0106 14:35:51.472033 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:36:25.523620 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-3650, -650, 650, -250), type=0
+I0106 14:36:25.523636 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:37:26.154294 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-3200, -650, -1950, -650), type=0
+I0106 14:37:26.154309 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:37:42.744012 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-1650, -700, -700, -700), type=0
+I0106 14:37:42.744026 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:38:01.210886 424] [COV] CCoveragePlanning::_gotoUncovArea - no uncovered area found cell_cnt=0, path_retry=0
+I0106 14:41:10.680138 537] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4000, 450, -1950, 550), type=0
+I0106 14:41:10.680153 537] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:41:34.560465 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4100, 650, -3400, 3700), type=0
+I0106 14:41:34.560487 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:41:51.416956 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4100, 650, -3400, 3700), type=0
+I0106 14:41:51.417037 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:41:58.533401 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4000, 650, -3400, 700), type=0
+I0106 14:41:58.533418 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:42:05.509675 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4100, 850, -3650, 3700), type=0
+I0106 14:42:05.509691 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:42:24.246834 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4100, 850, -3650, 3700), type=0
+I0106 14:42:24.246850 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:42:31.292269 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4100, 1050, -3650, 3700), type=0
+I0106 14:42:31.292285 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:42:46.884485 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4100, 1250, -3650, 3700), type=0
+I0106 14:42:46.884501 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:43:13.465101 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4100, 1750, -3700, 3700), type=0
+I0106 14:43:13.465178 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:43:37.015940 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4100, 1950, -3700, 3700), type=0
+I0106 14:43:37.015955 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:43:58.298627 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4100, 2150, -3700, 3700), type=0
+I0106 14:43:58.298707 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:44:21.615245 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4100, 2350, -3700, 3700), type=0
+I0106 14:44:21.615267 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:44:45.321329 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4100, 2550, -3750, 3700), type=0
+I0106 14:44:45.321403 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:45:09.505247 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4100, 2750, -3750, 3700), type=0
+I0106 14:45:09.505264 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:45:32.104636 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-4100, 2950, -3750, 3700), type=0
+I0106 14:45:32.104722 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:46:01.200487 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-2450, 400, -1950, 550), type=0
+I0106 14:46:01.200505 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:46:34.099086 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-2450, 400, -1950, 550), type=0
+I0106 14:46:34.099102 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:46:43.019448 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-2850, 950, 1050, 1000), type=0
+I0106 14:46:43.019464 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:47:14.006984 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-1650, 350, 1050, 900), type=0
+I0106 14:47:14.007000 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:47:38.475194 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (-3300, 1450, -2300, 1450), type=0
+I0106 14:47:38.475210 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:48:04.866654 424] [COV] CCoveragePlanning::_gotoUncovArea - no uncovered area found cell_cnt=6, path_retry=4
+I0106 14:54:58.485328 537] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (100, -200, 4400, 50), type=0
+I0106 14:54:58.485343 537] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1
+I0106 14:55:40.318744 424] [COV] CCoveragePlanning::_gotoUncovArea - find uncovered area (100, 0, 4350, 50), type=0
+I0106 14:55:40.318759 424] [COV] CCoveragePlanning::_gotoUncovArea - coverage using 1

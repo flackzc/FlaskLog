@@ -27,44 +27,30 @@
             <button name="submit2" type="submit"> draw </button>
         </p>
     </form>
-
-    <form action="/search" method="post">
+    <form action="/delete" method="post">
         <p>
-            <input type="text" name="fname3" maxlength="10000" style="width:400px" placeholder="请输入日志名称">
-            <button name="submit4" type="submit">search</button>
-            <!-- <button name="submit3" type="submit">clear</button> -->
+            <button name="submit3" type="submit">clear</button>
         </p>
     </form>
 
     {# 使用 length 过滤器获取 movies 变量的长度 #}
-    <p>{{ log|length }} Titles 
-        <form action="/delete" method="post">
-            <p>
-                <!-- <input type="text" name="fname3" maxlength="10000" style="width:400px" placeholder="请输入日志名称"> -->
-                <!-- <button name="submit4" type="submit">search</button> -->
-                <button name="submit3" type="submit">clearcache</button>
-            </p>
-        </form>
-
-    </p>
+    <p>{{ log|length }} Titles</p>
 
     <!-- position:absolute;  --> 
-    <div style="height:350px; width:600px; overflow:auto">
+    <div style="height:450px; width:600px; overflow:auto">
 
     <ul class="movie-list">
         {% for eachlog in log %}  {# 迭代 movies 变量 #}
         <li>{{ eachlog }}     
-            <!-- <form action="/reduceeach" method="post"> -->
-                <!-- <button name="submit4" type="submit">reduceeach</button> -->
-                <!-- <button name="submit5" type="submit">draweach</button> -->
-            <!-- </form> -->
+            <!-- <form action="/reduceeach" method="post">
+                <button name="submit4" type="submit">reduceeach</button>
+                <button name="submit5" type="submit">draweach</button>
+            </form> -->
         </li>  {# 等同于 movie['title'] #}
         {% endfor %}  {# 使用 endfor 标签结束 for 语句 #}
     </ul>
-
     </div>
     <footer>
-
         <img alt="Walking Totoro" class="totoro" src="{{ url_for('static', filename='images/totoro.gif') }}">
         <small>&copy; 2021 <a href="https://www.midea.cn/">美智纵横科技有限公司</a></small>
     </footer>
