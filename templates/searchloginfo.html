@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    <div id="t-warp">
     <h2>
         <img alt="Avatar" class="avatar" src="{{ url_for('static', filename='images/avatar.png') }}">
         {{ name }}'s log analyse web 
@@ -33,20 +34,20 @@
         </p>
     </form>
 
-    {# 使用 length 过滤器获取 movies 变量的长度 #}
+    {# 使用 length 过滤器获取 result 变量的长度 #}
     <p>{{ result|length }} logs</p>
 
     <!-- position:absolute;  --> 
     <div style="height:450px; width:600px; overflow:auto">
 
     <ul class="movie-list">
-        {% for eachlog in result %}  {# 迭代 movies 变量 #}
+        {% for eachlog in result %}  {# 迭代 result 变量 #}
         <li>{{ eachlog }}     
             <!-- <form action="/reduceeach" method="post">
                 <button name="submit4" type="submit">reduceeach</button>
                 <button name="submit5" type="submit">draweach</button>
             </form> -->
-        </li>  {# 等同于 movie['title'] #}
+        </li>  {# 等同于 result['title'] #}
         {% endfor %}  {# 使用 endfor 标签结束 for 语句 #}
     </ul>
     </div>
@@ -54,5 +55,6 @@
         <img alt="Walking Totoro" class="totoro" src="{{ url_for('static', filename='images/totoro.gif') }}">
         <small>&copy; 2021 <a href="https://www.midea.cn/">美智纵横科技有限公司</a></small>
     </footer>
+    </div>
 </body>
 </html>

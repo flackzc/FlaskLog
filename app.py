@@ -12,11 +12,11 @@ name = 'zc'
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////' + os.path.join(app.root_path, 'data.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-logBasePath = '/media/sf_p-workspace/M7log/' #服务器日志目录
+logBasePath = '/media/sf_p-workspace/M7log/' # 服务器日志目录
 outPutPath = os.getcwd()
 resultPath = outPutPath + "/result.log"
 
-#读取日志服务器目录
+# 读取日志服务器目录
 logList = []
 log = os.listdir(logBasePath)
 for line in log:
@@ -25,14 +25,14 @@ for line in log:
         logList.append(line)
     # logList.reverse()
 
-#init方法，点击按钮是调用该方法删除缓存文件
+# init方法，点击按钮是调用该方法删除缓存文件
 def xremove(removcelogname):
     try:
         os.remove(removcelogname)
     except FileNotFoundError as e:
         pass
 
-#主页显示，读取index.html并显示
+# 主页显示，读取index.html并显示主页
 @app.route('/')
 def index():
     logList = []
@@ -47,6 +47,7 @@ def index():
     xremove("temp.log")
     return render_template('index.html', name=name, log=logList)
 
+# 日志搜索
 @app.route('/search', methods=['POST', 'GET'])
 def search():
     searchList = []
@@ -64,6 +65,7 @@ def search():
     xremove("temp.log")
     return render_template('search.html', name=name, log=searchList)
 
+# 日志内容搜索
 @app.route("/analyse/searchloginfo", methods=['POST', 'GET']) 
 def searchloginfo(): 
     # xremove(resultPath)
@@ -89,7 +91,7 @@ def searchloginfo():
         xremove(flaskstate4.logPath + "temp.log")
         return render_template('searchloginfo.html', name=name, logname=searchLogName, result=resultList)
 
-#点击主页reduce按钮，判断输入框内容后传参给分析脚本，跳转到result.html显示分析内容
+# 点击主页reduce按钮，判断输入框内容后传参给分析脚本，跳转到result.html显示分析内容
 @app.route("/analyse", methods=['POST', 'GET']) 
 def analyse(): 
     xremove(resultPath)
@@ -113,7 +115,7 @@ def analyse():
 
 
 
-#点击主页draw按钮，判断输入框内容后传参给分析脚本，跳转到draw.html显示分析内容
+# 点击主页draw按钮，判断输入框内容后传参给分析脚本，跳转到draw.html显示分析内容
 @app.route("/draw", methods=['POST', 'GET'])
 def draw():
     inputLogName2 = request.form.get('fname2').strip(' ')   
@@ -132,7 +134,7 @@ def draw():
 
         return render_template('draw.html', name=name)
 
-#点击主页clear按钮，调用xremote方法删除缓存文件
+# 点击主页clear按钮，调用xremote方法删除缓存文件
 @app.route("/delete", methods=['POST', 'GET'])
 def delete():
     for png in os.listdir("static/outputimage/"):

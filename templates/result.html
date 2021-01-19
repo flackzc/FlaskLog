@@ -10,7 +10,7 @@
 </head>
 
 <body>
-
+    <div id="t-warp">
     <h2>
         <img alt="Avatar" class="avatar" src="{{ url_for('static', filename='images/avatar.png') }}">
         {{ name }}'s get log state
@@ -28,8 +28,8 @@
     </p>
 
     <ul class="movie-list">
-        {% for eachlog in result %}  {# 迭代 movies 变量 #}
-        <li>{{ eachlog }} </li>  {# 等同于 movie['title'] #}
+        {% for eachlog in result %}  {# 迭代 result 变量 #}
+        <li>{{ eachlog }} </li>  {# 等同于 result['title'] #}
         {% endfor %}  {# 使用 endfor 标签结束 for 语句 #}
     </ul>
 
@@ -37,5 +37,6 @@
         <img alt="Walking Totoro" class="totoro" src="{{ url_for('static', filename='images/totoro.gif') }}">
         <small>&copy; 2021 <a href="https://www.midea.cn/">美智纵横科技有限公司</a></small>
     </resultfooter>
+    </div>
 </body>
 </html>

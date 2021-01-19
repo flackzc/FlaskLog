@@ -6,35 +6,40 @@ body {
     height: 100%; */
     font-size: 14px;
     font-family: Helvetica, Arial, sans-serif;
+    background:rgb(161, 206, 231)  no-repeat 0 0 fixed
 }
 
 /* 页脚 */
 footer {
-    color: #888;
+    color: rgb(255, 255, 255);
     margin-top: 15px;
     text-align: center;
     padding: 10px;
     bottom:0;
     position:absolute;
+    /* background:rgb(243, 244, 245)  no-repeat 0 0 fixed */
 }
-
-resultfooter {
+#t-warp {
+    margin:0 auto;
+    width:800px
+}
+/* resultfooter {
     color: #888;
     margin-top: 15px;
     text-align: center;
     padding: 10px;
     /* bottom:0; */
     /* position:absolute; */
-}
+/* } */
 
-drawfooter {
+/* drawfooter {
     color: #888;
     margin-top: 15px;
     text-align: center;
     padding: 10px;
     /* bottom:0; */
     /* position:absolute; */
-}
+/* } */ 
 
 /* 头像 */
 .avatar {
@@ -73,5 +78,5 @@ drawfooter {
 .totoro {
     display: block;
     margin: 0 auto;
-    /* height: 100px; */
+    height: 100px;
 }
