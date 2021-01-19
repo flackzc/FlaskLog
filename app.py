@@ -25,7 +25,11 @@ def loadLog():
     logList = []
     log = os.listdir(logBasePath)
     for line in log:
+<<<<<<< HEAD
         # print(line)
+=======
+        print(line)
+>>>>>>> 06869f91d7a512bce2aab1a8c3372d85af661a44
         if os.path.isdir(logBasePath + line) and line.startswith("202") and not line.endswith(")"):
             logList.append(line)
         # logList.reverse()
