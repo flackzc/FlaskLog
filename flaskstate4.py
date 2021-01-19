@@ -1067,8 +1067,8 @@ def state_log3():
         elif "[SLAM]" in i and "no laser data send" in i and not ignore(i):
             writelog(log_list[1], "[ERROR] lds数据不更新")
 
-        elif "FaultNum" in i and not ignore(i):
-            writelog(log_list[1], faultnum(log_list[12]))        
+#        elif "FaultNum" in i and not ignore(i):
+#            writelog(log_list[1], faultnum(log_list[12]))        
 
         elif "_GotoNextCleanArea" in i and not ignore(i):
             # writelog(log_list[1], "[消息] 去下一个分区",log_list[5].strip())
