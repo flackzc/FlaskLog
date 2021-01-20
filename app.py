@@ -109,6 +109,9 @@ def analyse():
         return "log file not exist"
     elif inputLogName == "." or inputLogName == "..":
         return "log file not exist"
+    elif not os.path.getsize(logBasePath + inputLogName):
+        return "log dir empty"
+
     else:
         print(logBasePath + inputLogName)
         flaskstate4.merge_log(logBasePath + inputLogName, "temp.log")
