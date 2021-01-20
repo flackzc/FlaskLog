@@ -103,13 +103,14 @@ def analyse():
     xremove(resultPath)
     xremove("temp.log")
     inputLogName = request.form.get('fname').strip(' ')
+    # print(os.path.getsize(logBasePath + inputLogName))
     if not inputLogName:
         return "input empty"
     elif not os.path.exists(logBasePath + inputLogName):
         return "log file not exist"
     elif inputLogName == "." or inputLogName == "..":
         return "log file not exist"
-    elif not os.path.getsize(logBasePath + inputLogName):
+    elif not os.listdir(logBasePath + inputLogName):
         return "log dir empty"
 
     else:
@@ -119,7 +120,7 @@ def analyse():
         fo = open(resultPath, 'r')
         result = fo.readlines()
         # xremove(resultPath)
-        xremove(flaskstate4.logPath + "temp.log")
+        # xremove(flaskstate4.logPath + "temp.log")
         return render_template('result.html', name=name, logname= inputLogName, result=result)
 
 
