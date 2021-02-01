@@ -1,4 +1,0 @@
-I0119 09:41:01.100916 530] [COV] CMotionPlanTask::StartCoverage - (-1518, -2007, 3682, 3193) first=1
-I0119 09:41:01.659099 530] [COV] CMotionPlanTask::StartCoverage - start coverage
-I0119 09:44:57.748486 530] [COV] CMotionPlanTask::StartCoverage - (-1461, -2011, 3739, 3189) first=1
-I0119 09:44:58.295596 530] [COV] CMotionPlanTask::StartCoverage - start coverage

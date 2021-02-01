@@ -25,7 +25,7 @@ def loadLog():
     logList = []
     log = os.listdir(logBasePath)
     for line in log:
-        print(line)
+        # print(line)
         if os.path.isdir(logBasePath + line) and line.startswith("202") and not line.endswith(")"):
             logList.append(line)
         # logList.reverse()
@@ -60,7 +60,7 @@ def search():
     searchLogName = request.form.get('fname3').strip(' ')
     log = os.listdir(logBasePath)
     for line in log:
-        print(line)
+        # print(line)
         if os.path.isdir(logBasePath + line) and line.startswith("202") and not line.endswith(")") and searchLogName in line:
             searchList.append(line)
         elif not searchLogName:
@@ -92,9 +92,9 @@ def searchloginfo():
         for line in fo.readlines():
             if searchLogName.lower() in line.lower():
                 resultList.append(line)
-        print(resultList)
+        # print(resultList)
         # xremove(resultPath)
-        xremove(flaskstate4.logPath + "temp.log")
+        # xremove(flaskstate4.logPath + "temp.log")
         return render_template('searchloginfo.html', name=name, logname=searchLogName, result=resultList)
 
 # 点击主页reduce按钮，判断输入框内容后传参给分析脚本，跳转到result.html显示分析内容

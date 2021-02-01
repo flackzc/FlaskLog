@@ -1,6 +1,6 @@
 #!/bin/python
-def test(*xargs):
-    print(xargs)
+# def test(*xargs):
+#     print(xargs)
 
 
-test("dd","sdf")
+# test("dd","sdf")
